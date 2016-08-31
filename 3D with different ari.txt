@@ -1,0 +1,50 @@
+WF=3E7  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ari = 3;
+Elapsed time is 10.867286 seconds.
+NF =
+14554
+testtime =
+18.9492
+
+ari = 5;
+Elapsed time is 28.824214 seconds.
+NF =
+24256
+testtime =
+18.9492
+
+ari = 10;
+Elapsed time is 75.842723 seconds.
+NF =
+48510
+testtime =
+18.9488
+
+ari = 20;
+Elapsed time is 336.469495 seconds.
+NF =
+97019
+testtime =
+18.9488
+
+WF=7E7          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ari = 1;
+Elapsed time is 6.702699 seconds.
+NF =
+14937
+testtime =
+58.3438
+
+ari = 2;
+Elapsed time is 26.211975 seconds.
+NF =
+29873
+testtime =
+58.3438
+
+ari = 10;
+Elapsed time is 616.897822 seconds.
+NF =
+149358
+testtime =
+58.3426
