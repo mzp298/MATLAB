@@ -74,9 +74,11 @@ sigu=8e8;             %ultimite stress
 gam=0.5;                %material parameter from Chaboche law(Wohler curve exponent)
 samplerate=256;   %recorded samples per second
 
+
+
 %---------------------Vecterization-----------------------------
 tic;
-WF=3e8;             %dissipated energy to failure per unit volume
+WF=3e6;             %dissipated energy to failure per unit volume
 alp=0.8;
 D=0;             %initial damage
 n=1;                      %initial recording point
@@ -152,19 +154,19 @@ while G<1
     G = G+W/WF;
     D(n+1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
     t=n*step;
-    hold on;
-    yield1=plot (n,y*s(1).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 10, ...
-        'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'c');
-    Trial1=plot (n,normtrial(1),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
-        'MarkerEdgeColor','r', 'MarkerFaceColor','r');
-    Sb1=plot (n,normSb(1),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
-        'MarkerEdgeColor','g', 'MarkerFaceColor','g');
-    yield8=plot (n,y*s(8).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 10, ...
-        'MarkerEdgeColor', 'none', 'MarkerFaceColor', 'b');
-    Trial8=plot (n,normtrial(8),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
-        'MarkerEdgeColor', [1 0.5 0], 'MarkerFaceColor',[1 0.5 0]);
-    Sb8=plot (n,normSb(8),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
-        'MarkerEdgeColor','k', 'MarkerFaceColor','k');
+%     hold on;
+%     yield1=plot (n,y*s(1).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 10, ...
+%         'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'c');
+%     Trial1=plot (n,normtrial(1),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
+%         'MarkerEdgeColor','r', 'MarkerFaceColor','r');
+%     Sb1=plot (n,normSb(1),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
+%         'MarkerEdgeColor','g', 'MarkerFaceColor','g');
+%     yield8=plot (n,y*s(8).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 10, ...
+%         'MarkerEdgeColor', 'none', 'MarkerFaceColor', 'b');
+%     Trial8=plot (n,normtrial(8),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
+%         'MarkerEdgeColor', [1 0.5 0], 'MarkerFaceColor',[1 0.5 0]);
+%     Sb8=plot (n,normSb(8),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
+%         'MarkerEdgeColor','k', 'MarkerFaceColor','k');
     % DamageN=plot (t,D,'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize',10, ...
     %    'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'r');
     n=n+1;
