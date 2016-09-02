@@ -14,9 +14,9 @@ forcez= transpose(signal.data);
 
 forceorigin=repmat(forcex,3,1);
 
-ari=10; %  Arithmetic sequence between every recorded points
+ari=2; %  Arithmetic sections between every recorded points
 for i=2:(1*802805) 
-force(1+ari*(i-2):1+ari*(i-1))=linspace(forceorigin(i-1),forceorigin(i),ari+1);
+    force(1+ari*(i-2):1+ari*(i-1))=linspace(forceorigin(i-1),forceorigin(i),ari+1);
 end;
 %  ari*(i-1)+1 %the number of points
 A=1/1e6;
@@ -140,7 +140,7 @@ while G<0.02
   n=n+1;
 end
 toc;
-disp(['Number of points to failure is ' num2str(n) ' points.']);
+disp(['Number of test points is ' num2str(n/ari+1) ' points.']);
 
 %---------------------plot settings-----------------------------
 grid on;

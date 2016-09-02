@@ -16,7 +16,7 @@ forcez= transpose(signal.data);
  forcez=repmat(forcez,3,1);
 
 %---------------------Arithmetic sequence between every recorded points---------------------
-ari=10; 
+ari=2;  %  Arithmetic sections between every recorded points
  for i=2:(1*802805) 
 %force(1+ari*(i-1):1+ari*i)=linspace(forceorigin(i),forceorigin(i+1),ari+1);
 forcelx(1+ari*(i-2):1+ari*(i-1))=linspace(forcex(i-1),forcex(i),ari+1);

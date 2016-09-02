@@ -15,7 +15,7 @@ forcez= transpose(signal.data);
 copy=3;
 forceorigin=repmat(forcex,copy,1);
 
-ari=10; %  Arithmetic sequence between every recorded points
+ari=2; %  Arithmetic sections between every recorded points
 for i=2:(copy*802805)
     force(1+ari*(i-2):1+ari*(i-1))=linspace(forceorigin(i-1),forceorigin(i),ari+1);
 end;
@@ -52,7 +52,7 @@ samplerate=256;   %recorded samples per second
 tic;
 D=0;             %initial damage
 n=1;                      %initial recording point
-WF=3e6;             %dissipated energy to failure per unit volume
+WF=3e8;             %dissipated energy to failure per unit volume
 alp=0.8;
 step=1/samplerate/ari;
 t=n*step;
@@ -61,7 +61,7 @@ G = (1 - (1 - D).^(gam + 1)).^(1-alp);
 m=1/3*sum(stress(1)+0+0);
 yield=y-lam*m; %macro yield strength considering mean stress effect
 yield(yield<0)=0;
-dev1=[stress(1) 0 0 ;0 0 0 ;0 0 0 ]-m*diag([1,1,1]);
+dev1=[stress(1) 0 0 ;0 0 0 ;0 0 0 ]-m*eye(3);
 dev11=dev1(1,1); dev12=dev1(1,2); dev13=dev1(1,3);
 dev21=dev1(2,1); dev22=dev1(2,2); dev23=dev1(2,3);
 dev31=dev1(3,1); dev32=dev1(3,2); dev33=dev1(3,3);
@@ -90,7 +90,7 @@ G = G+W/WF;
 
 while G<0.02
     m=1/3*sum(stress(n)+0+0);
-    dev1=[stress(n) 0 0 ;0 0 0 ;0 0 0 ]-m*diag([1,1,1]);
+    dev1=[stress(n) 0 0 ;0 0 0 ;0 0 0 ]-m*eye(3);
     dev11=dev1(1,1); dev12=dev1(1,2); dev13=dev1(1,3);
     dev21=dev1(2,1); dev22=dev1(2,2); dev23=dev1(2,3);
     dev31=dev1(3,1); dev32=dev1(3,2); dev33=dev1(3,3);
@@ -98,7 +98,7 @@ while G<0.02
     m=1/3*sum(stress(n+1)+0+0);
     yield=y-lam*m; %macro yield strength considering mean stress effect
     yield(yield<0)=0;
-    devn=[stress(n+1) 0 0;0 0 0;0 0 0]-m*diag([1,1,1]);
+    devn=[stress(n+1) 0 0;0 0 0;0 0 0]-m*eye(3);
     dev11g=devn(1,1); dev12g=devn(1,2); dev13g=devn(1,3);
     dev21g=devn(2,1); dev22g=devn(2,2); dev23g=devn(2,3);
     dev31g=devn(3,1); dev32g=devn(3,2); dev33g=devn(3,3);
@@ -128,17 +128,17 @@ while G<0.02
     D=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
     t=(n+1)*step;
     hold on;
-    yield1=plot (n,yield*s(1).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 6, ...
+    yield1=plot (n,yield*s(1).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 10, ...
         'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'c');
-    Trial1=plot (n,normtrial(1),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 6, ...
+    Trial1=plot (n,normtrial(1),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
         'MarkerEdgeColor','r', 'MarkerFaceColor','r');
-    Sb1=plot (n,normSb(1),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 6, ...
+    Sb1=plot (n,normSb(1),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
         'MarkerEdgeColor','g', 'MarkerFaceColor','g');
-    yield8=plot (n,yield*s(8).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 6, ...
+    yield8=plot (n,yield*s(8).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 10, ...
         'MarkerEdgeColor', 'none', 'MarkerFaceColor', 'b');
-    Trial8=plot (n,normtrial(8),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 6, ...
+    Trial8=plot (n,normtrial(8),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
         'MarkerEdgeColor', [1 0.5 0], 'MarkerFaceColor',[1 0.5 0]);
-    Sb8=plot (n,normSb(8),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 6, ...
+    Sb8=plot (n,normSb(8),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
         'MarkerEdgeColor','k', 'MarkerFaceColor','k');
     
     %   DamageN=plot (t,D,'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize',10, ...
@@ -146,7 +146,7 @@ while G<0.02
     n=n+1;
 end
 toc;
-disp(['Number of points to failure is ' num2str(n) ' points.']);%in the end of loop n=n+1 compensate the first point
+disp(['Number of test points is ' num2str(n/ari+1) ' points.']);
 %---------------------plot settings-----------------------------
 grid on;
 grid minor;
@@ -157,9 +157,9 @@ hXLabel = xlabel('t(s)' ,'Fontsize' ,25);
 %  hYLabel =ylabel('D', 'Fontsize' ,25);
 
 hTitle = title('Microscopic stress evolution at 2 scales' ,'Fontsize' ,25);
-hYLabel = ylabel('(S-b)(Pa)', 'Fontsize' ,25);
-hLegend=legend([yield1,Sb1,Trial1,yield8,Sb8,Trial8],'(\sigma_y-\lambda\Sigma_H)/s_1     at scale s_1','(S-b)               at scale s_1',...
-    '(S-b)_{trial}           at scale s_1', '(\sigma_y-\lambda\Sigma_H)/s_8     at scale s_{8}','(S-b)               at scale s_{8}','(S-b)_{trial}           at scale s_{8}');
+hYLabel = ylabel('Stress(Pa)', 'Fontsize' ,25);
+hLegend=legend([yield1,Sb1,Trial1,yield8,Sb8,Trial8],'(\sigma_y-\lambda\Sigma_H)/s_1     at scale s_1','||S-b||              at scale s_1',...
+    '||S-b||_{trial}         at scale s_1', '(\sigma_y-\lambda\Sigma_H)/s_8     at scale s_{8}','||S-b||              at scale s_{8}','||S-b||_{trial}         at scale s_{8}');
 set([hLegend, gca], 'FontSize', 25)
 
 % Adjust font
@@ -187,4 +187,4 @@ saveas(gcf,'trialreal1d.png');
 sp=actxserver('SAPI.SpVoice');
 sp.Speak('Fuck that I finished all this shit finally');
 
-mail2me('job finished',['Elapsed time is ' num2str(toc) ' seconds.']);
+% mail2me('job finished',['Elapsed time is ' num2str(toc) ' seconds.']);
