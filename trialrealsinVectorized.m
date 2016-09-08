@@ -209,4 +209,4 @@ saveas(gcf,'trialsin.png');
 
 
 %
-% mail2me('job finished',['Elapsed time is ' num2str(toc) ' seconds.']);
+%mail2me('job finished',['Elapsed time is ' num2str(toc) ' seconds. Real test time is ' testtime ' seconds. Number of points to failure is ' NF ' points.']);

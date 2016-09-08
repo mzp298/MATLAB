@@ -27,7 +27,7 @@ end;
 %  ari*(i-1)+1 ;%the number of points
 
 %------------------------build the stress tensor---------------------
-A=1/6e3;
+A=6.45e-5;
 % A=1/6e4;
 cx=10;
 cy=60;
@@ -78,7 +78,7 @@ samplerate=256;   %recorded samples per second
 
 %---------------------Vecterization-----------------------------
 
-WF=6e8;             %dissipated energy to failure per unit volume
+WF=3e6;             %dissipated energy to failure per unit volume
 alp=0.8;
 D=0;             %initial damage
 n=1;                      %initial recording point
@@ -122,7 +122,7 @@ G = G+W/WF; %1.322163316411401e-03
 D(1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
 
 tic;
-while G<1
+while G<0.1
     m=1/3*sum(stress11(n)+stress22(n)+stress33(n));
     dev1=[stress11(n) stress12(n) stress13(n);stress21(n) stress22(n) stress23(n);stress31(n) stress32(n) stress33(n)]-m*eye(3);
     dev11=dev1(1,1); dev12=dev1(1,2); dev13=dev1(1,3);
@@ -182,10 +182,10 @@ while G<1
 end;
 toc;
 disp(['Number of test points is ' num2str(n/ari+1) ' points.']);
-NF=num2str(n);
+disp(['Number of test time is ' num2str(t) ' points.']);
 testtime=num2str(t)
-% sp=actxserver('SAPI.SpVoice');
-% sp.Speak('Fuck that I finished all this shit finally');
+sp=actxserver('SAPI.SpVoice');
+sp.Speak('I finished all the work finally. oh la la');
 
  hold on;
 
@@ -243,5 +243,5 @@ set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,botto
 saveas(gcf,'trialreal3d.png');
 
 
-% mail2me('job finished',['Elapsed time is ' time ' seconds. Number of points to failure is ' NF ' points.']);
+% mail2me('job finished',['Elapsed time is ' num2str(toc) ' seconds. Real test time is ' testtime ' seconds. Number of test points is ' num2str(n/ari+1) ' points.']);
 %

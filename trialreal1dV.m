@@ -187,4 +187,4 @@ saveas(gcf,'trialreal1d.png');
 sp=actxserver('SAPI.SpVoice');
 sp.Speak('Fuck that I finished all this shit finally');
 
-% mail2me('job finished',['Elapsed time is ' num2str(toc) ' seconds.']);
+% mail2me('job finished',['Elapsed time is ' num2str(toc) ' seconds. Real test time is ' testtime ' seconds. Number of points to failure is ' NF ' points.']);
