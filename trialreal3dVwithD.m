@@ -74,26 +74,27 @@ bc=tt;                     %crossland criterial constant
 sigu=8e8;             %ultimite stress
 gam=0.5;                %material parameter from Chaboche law(Wohler curve exponent)
 samplerate=256;   %recorded samples per second
-
+delta=3; %yield stress degradation sensitivity with D
 
 %---------------------Vecterization-----------------------------
 
-WF=3e6;             %dissipated energy to failure per unit volume
+WF=3e8;             %dissipated energy to failure per unit volume
 alp=0.8;
 D=0;             %initial damage
 n=1;                      %initial recording point
 step=1/samplerate/ari;
 t=n*step;
 G = (1 - (1 - D).^(gam + 1)).^(1-alp);
-yield = zeros(size(forcelx)); %Pre-allocate memory for vector
+yield = zeros(size(forcelx)); %Pre-allocate memory for vectors
 D = yield;
-normSb = zeros(length(forcelx),length(x));
+normSb = zeros(length(forcelx),length(x)); %Pre-allocate memory for tensors
 normtrial = normSb;
 
 %---------------------to get the the first Sb-----------------------------
-m=1/3*sum(stress11(1)+stress22(1)+stress33(1));
-yield(1)=y-lam*m; %macro yield strength considering mean stress effect
-dev1=[stress11(1) stress12(1) stress13(1);stress21(1) stress22(1) stress23(1);stress31(1) stress32(1) stress33(1)]-m*eye(3);
+hydro=1/3*sum(stress11(1)+stress22(1)+stress33(1));
+M=0.48*sigu*(1-3*hydro/sigu); %M function in Chaboche model
+yield(1)=y*(1-D)^delta*M; %macro yield strength considering mean stress effect
+dev1=[stress11(1) stress12(1) stress13(1);stress21(1) stress22(1) stress23(1);stress31(1) stress32(1) stress33(1)]-hydro*eye(3);
 dev11=dev1(1,1); dev12=dev1(1,2); dev13=dev1(1,3);
 dev21=dev1(2,1); dev22=dev1(2,2); dev23=dev1(2,3);
 dev31=dev1(3,1); dev32=dev1(3,2); dev33=dev1(3,3);
@@ -123,25 +124,27 @@ D(1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
 
 tic;
 while G<1
-    m=1/3*sum(stress11(n)+stress22(n)+stress33(n));
-    dev1=[stress11(n) stress12(n) stress13(n);stress21(n) stress22(n) stress23(n);stress31(n) stress32(n) stress33(n)]-m*eye(3);
+    hydro=1/3*sum(stress11(n)+stress22(n)+stress33(n));
+    dev1=[stress11(n) stress12(n) stress13(n);stress21(n) stress22(n) stress23(n);stress31(n) stress32(n) stress33(n)]-hydro*eye(3);
     dev11=dev1(1,1); dev12=dev1(1,2); dev13=dev1(1,3);
     dev21=dev1(2,1); dev22=dev1(2,2); dev23=dev1(2,3);
     dev31=dev1(3,1); dev32=dev1(3,2); dev33=dev1(3,3);
     
-    m=1/3*sum(stress11(n+1)+stress22(n+1)+stress33(n+1));
-    yield(n+1)=y-lam*m; %macro yield strength considering mean stress effect
-    yield(yield<0)=0;
-    devn=[stress11(n+1) stress12(n+1) stress13(n+1);stress21(n+1) stress22(n+1) stress23(n+1);stress31(n+1) stress32(n+1) stress33(n+1)]-m*eye(3);
+    hydro=1/3*sum(stress11(n+1)+stress22(n+1)+stress33(n+1));
+    M=0.48*sigu*(1-3*hydro/sigu); %M function in Chaboche model
+    M(M<0)=0;
+    yield(n+1)=y*(1-D)^delta*M; %macro yield strength considering mean stress effect
+
+    devn=[stress11(n+1) stress12(n+1) stress13(n+1);stress21(n+1) stress22(n+1) stress23(n+1);stress31(n+1) stress32(n+1) stress33(n+1)]-hydro*eye(3);
     dev11g=devn(1,1); dev12g=devn(1,2); dev13g=devn(1,3);
     dev21g=devn(2,1); dev22g=devn(2,2); dev23g=devn(2,3);
     dev31g=devn(3,1); dev32g=devn(3,2); dev33g=devn(3,3);
-    
     trial11=bsxfun(@plus,Sb11,(dev11g-dev11)); trial12=bsxfun(@plus,Sb12,(dev12g-dev12));trial13=bsxfun(@plus,Sb13,(dev13g-dev13));
     trial21=bsxfun(@plus,Sb21,(dev21g-dev21)); trial22=bsxfun(@plus,Sb22,(dev22g-dev22));trial23=bsxfun(@plus,Sb23,(dev23g-dev23));
     trial31=bsxfun(@plus,Sb31,(dev31g-dev31)); trial32=bsxfun(@plus,Sb32,(dev32g-dev32));trial33=bsxfun(@plus,Sb33,(dev33g-dev33));
     trialtensor=[trial11; trial12; trial13; trial21; trial22; trial23;trial31; trial32; trial33];
     normtrial(n+1,:)=sqrt(sum(trialtensor.^2));
+    
     eta=bsxfun(@minus,bsxfun(@times,normtrial(n+1,:)/yield(n+1),s),1); %1*25
     eta(eta<0)=0;
     
@@ -174,6 +177,7 @@ while G<1
 %             'MarkerEdgeColor', [1 0.5 0], 'MarkerFaceColor',[1 0.5 0]);
 %         Sb8=plot (n,normSb(n,8),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
 %             'MarkerEdgeColor','k', 'MarkerFaceColor','k');
+
     
     % DamageN=plot (t,D,'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize',10, ...
     %    'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'r');
@@ -229,7 +233,7 @@ set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 
-saveas(gcf,'trialreal3d with simple yield.png');
+saveas(gcf,'trialreal3d yield evolve with D.png');
 
 %---------------------Plot Damage evolution-----------------------------
 figure(2);
@@ -259,8 +263,9 @@ set(gcf,'outerposition',get(0,'screensize'));
 set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
-saveas(gcf,'damage3d with simple yield.png');
+saveas(gcf,'damage3d yield evolve with D.png');
 
 
-mail2me('job finished',['Elapsed time is ' num2str(toc) ' seconds. Real test time is ' testtime ' seconds. Number of test points is ' num2str(n/ari+1) ' points.']);
+ mail2me('job finished',['Elapsed time is ' num2str(toc) ' seconds. Real test time is ' testtime ' seconds. Number of test points is ' num2str(n/ari+1) ' points.']);
+%
 
