@@ -78,7 +78,7 @@ delta=3; %yield stress degradation sensitivity with D
 
 %---------------------Vecterization-----------------------------
 
-WF=3e8;             %dissipated energy to failure per unit volume
+WF=3e5;             %dissipated energy to failure per unit volume
 alp=0.8;
 D=0;             %initial damage
 n=1;                      %initial recording point
@@ -92,8 +92,9 @@ normtrial = normSb;
 
 %---------------------to get the the first Sb-----------------------------
 hydro=1/3*sum(stress11(1)+stress22(1)+stress33(1));
-M=0.48*sigu*(1-3*hydro/sigu); %M function in Chaboche model
-yield(1)=y*(1-D)^delta*M; %macro yield strength considering mean stress effect
+M=(1-3*hydro/sigu); %M function in Chaboche model
+M(M<0)=0;
+yield(1)=y*(1-D(1))^delta*M; %macro yield strength considering mean stress effect
 dev1=[stress11(1) stress12(1) stress13(1);stress21(1) stress22(1) stress23(1);stress31(1) stress32(1) stress33(1)]-hydro*eye(3);
 dev11=dev1(1,1); dev12=dev1(1,2); dev13=dev1(1,3);
 dev21=dev1(2,1); dev22=dev1(2,2); dev23=dev1(2,3);
@@ -123,7 +124,7 @@ G = G+W/WF; %1.322163316411401e-03
 D(1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
 
 tic;
-while G<1
+while G<0.999 %766754
     hydro=1/3*sum(stress11(n)+stress22(n)+stress33(n));
     dev1=[stress11(n) stress12(n) stress13(n);stress21(n) stress22(n) stress23(n);stress31(n) stress32(n) stress33(n)]-hydro*eye(3);
     dev11=dev1(1,1); dev12=dev1(1,2); dev13=dev1(1,3);
@@ -131,9 +132,9 @@ while G<1
     dev31=dev1(3,1); dev32=dev1(3,2); dev33=dev1(3,3);
     
     hydro=1/3*sum(stress11(n+1)+stress22(n+1)+stress33(n+1));
-    M=0.48*sigu*(1-3*hydro/sigu); %M function in Chaboche model
+    M=(1-3*hydro/sigu); %M function in Chaboche model
     M(M<0)=0;
-    yield(n+1)=y*(1-D)^delta*M; %macro yield strength considering mean stress effect
+    yield(n+1)=y*(1-D(n))^delta*M; %macro yield strength considering mean stress effect
 
     devn=[stress11(n+1) stress12(n+1) stress13(n+1);stress21(n+1) stress22(n+1) stress23(n+1);stress31(n+1) stress32(n+1) stress33(n+1)]-hydro*eye(3);
     dev11g=devn(1,1); dev12g=devn(1,2); dev13g=devn(1,3);
@@ -178,11 +179,22 @@ while G<1
 %         Sb8=plot (n,normSb(n,8),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
 %             'MarkerEdgeColor','k', 'MarkerFaceColor','k');
 
-    
-    % DamageN=plot (t,D,'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize',10, ...
-    %    'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'r');
+%     hold on;
+%     DamageN=plot (t,D,'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize',10, ...
+%        'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'r');
+
+%     hold on;
+%     DamageN=plot (t,M,'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize',10, ...
+%        'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'r');
+   
+   
     n=n+1;
-end;
+end
+% %---------------------Plot Damage evolution-----------------------------
+% figure(2);
+% DamageN=plot ((1:n)*step,D(1:n),'LineStyle', 'none','LineWidth', 2, 'Marker', 'o', 'MarkerSize', 10, ...
+%    'MarkerEdgeColor',  'r' , 'MarkerFaceColor' ,'none');
+
 toc;
 disp(['Number of test points is ' num2str(n/ari+1) ' points.']);
 disp(['Number of test time is ' num2str(t) ' points.']);
@@ -233,7 +245,7 @@ set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 
-saveas(gcf,'trialreal3d yield evolve with D.png');
+% saveas(gcf,'trialreal3d yield evolve with D.png');
 
 %---------------------Plot Damage evolution-----------------------------
 figure(2);
@@ -263,9 +275,9 @@ set(gcf,'outerposition',get(0,'screensize'));
 set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
-saveas(gcf,'damage3d yield evolve with D.png');
+% saveas(gcf,'damage3d yield evolve with D.png');
 
 
- mail2me('job finished',['Elapsed time is ' num2str(toc) ' seconds. Real test time is ' testtime ' seconds. Number of test points is ' num2str(n/ari+1) ' points.']);
+%  mail2me('job finished',['Elapsed time is ' num2str(toc) ' seconds. Real test time is ' testtime ' seconds. Number of test points is ' num2str(n/ari+1) ' points.']);
 %
 
