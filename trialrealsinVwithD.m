@@ -4,14 +4,23 @@ clear;clc;
 
 dbstop if error
 format long e
-[x]= [-0.99555697 -0.976663921 -0.942974571 -0.894991998 -0.833442629 -0.759259263 -0.673566368...
-    -0.57766293 -0.473002731 -0.361172306 -0.243866884 -0.122864693 0 0.122864693 0.243866884 0.361172306...
-    0.473002731 0.57766293 0.673566368 0.759259263 0.833442629 0.894991998 0.942974571 0.976663921...
-    0.99555697];
-[weight]=[0.011393799	0.026354987	0.040939157	0.054904696	0.068038334	0.0801407	0.091028262...
-    0.100535949	0.108519624	0.114858259	0.119455764	0.122242443	0.123176054	0.122242443	0.119455764...
-    0.114858259	0.108519624	0.100535949	0.091028262	0.0801407	0.068038334	0.054904696	0.040939157...
-    0.026354987	0.011393799];
+
+[x]= [-0.024350293	0.024350293	-0.072993122	0.072993122	-0.121462819	0.121462819	-0.16964442	0.16964442...
+    -0.217423644	0.217423644	-0.264687162	0.264687162	-0.311322872	0.311322872	-0.357220158	0.357220158...
+    -0.402270158	0.402270158	-0.446366017	0.446366017	-0.489403146	0.489403146	-0.531279464	0.531279464...
+    -0.571895646	0.571895646	-0.611155355	0.611155355	-0.648965471	0.648965471	-0.685236313	0.685236313...
+    -0.71988185	0.71988185	-0.752819907	0.752819907	-0.783972359	0.783972359	-0.813265315	0.813265315...
+    -0.840629296	0.840629296	-0.865999398	0.865999398	-0.889315446	0.889315446	-0.910522137	0.910522137...
+    -0.929569172	0.929569172	-0.946411375	0.946411375	-0.9610088	0.9610088	-0.973326828	0.973326828	-0.983336254...
+    0.983336254	-0.991013371	0.991013371	-0.996340117	0.996340117	-0.999305042	0.999305042];
+[weight]=[0.048690957	0.048690957	0.048575467	0.048575467	0.048344762	0.048344762	0.047999389	0.047999389...
+    0.047540166	0.047540166	0.046968183	0.046968183	0.046284797	0.046284797	0.045491628	0.045491628	0.044590558...
+    0.044590558	0.043583725	0.043583725	0.042473515	0.042473515	0.041262563	0.041262563	0.039953741	0.039953741...
+    0.038550153	0.038550153	0.037055129	0.037055129	0.035472213	0.035472213	0.033805162	0.033805162	0.032057928...
+    0.032057928	0.030234657	0.030234657	0.028339673	0.028339673	0.02637747	0.02637747	0.024352703	0.024352703...
+    0.022270174	0.022270174	0.020134823	0.020134823	0.017951716	0.017951716	0.01572603	0.01572603	0.013463048...
+    0.013463048	0.011168139	0.011168139	0.00884676	0.00884676	0.006504458	0.006504458	0.004147033	0.004147033...
+    0.001783281	0.001783281];
 % [x]=xlsread('Gauss-Legendre Quadrature','Sheet1','b1:z1');
 % [weight]=xlsread('Gauss-Legendre Quadrature','Sheet1','b2:z2');
 
@@ -24,16 +33,53 @@ ff=2.5e8;              %bending fatigue limit
 ac=(tt-ff/sqrt(3))/(ff/3); %crossland criterial constant
 bc=tt;                    %crossland criterial constant
 sigu=8e8;             %ultimite stress
-gam=0.5;              %material parameter from Chaboche law(Wohler curve exponent)
+gam=b+1;              %material parameter from Chaboche law(Wohler curve exponent)
 y=6.38e8;            %macroscopic yield stress
 load=5e8;            %cyclic load
 loadtensor= [load 0 0;0 0 0;0 0 0];
 stepnumber=200;        %devide one cycle in 200 parts
 f=50;                            %frequency of load
 delta=b+1/b-1;
-WF=7e6;             %dissipated energy to failure per unit volume
-%---------------------numerical method-----------------------------
 alp=0.5;
+WF=5e8;             %dissipated energy to failure per unit volume
+
+%---------------------Plot 3 methods-----------------------------
+%---------------------1 Chaboche method-----------------------------
+Dcha(1)=0;             %initial damage
+n=1;       %initial recording point
+  G = (1 - (1 - Dcha(1)).^(gam + 1)).^(1-alp);
+  m=1/3*sum(diag(loadtensor));
+  S1=loadtensor-m*diag([1,1,1]);
+  sqrj1=1/2*sqrt(1/2)*norm(S1,'fro');
+  M=12.4262*ff*(1-3*m/sigu);
+  while G<1
+  NF=1/((gam+1)*(1-alp))*(sqrj1/M)^(-gam);
+  G = G+(1-alp)*(gam+1)*1/stepnumber/NF;
+  Dcha(n+1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
+  t=n/stepnumber*1/f;
+  n=n+1;
+  end
+  n
+    figure(2);
+    hold on;
+DamageCha=plot ((1:n),Dcha(1:n), 'LineStyle', 'none','LineWidth', 1.2, 'Marker', 'o', 'MarkerSize', 10, ...
+   'MarkerEdgeColor',  'g', 'MarkerFaceColor','none');
+%---------------------2 Cyclic load calculation-----------------------------
+Dcyc(1)=0;
+n=1;
+Gcyc = (1 - (1 - Dcyc(1)).^(gam + 1)).^(1-alp);
+Wcyc=4*(E-k)*(1+nu)*(b-1)/(E*(E+k*nu)*b*(b+1))*norm(loadtensor-(1/3*sum(diag(loadtensor)))*diag([1,1,1]),'fro').^(b+1)*y.^(1-b) ;
+while Gcyc< 1
+ Gcyc = Gcyc+(1-alp)*(gam+1)*Wcyc/stepnumber/WF;
+ Dcyc(n+1)=1-(1-Gcyc.^(1/(1-alp))).^(1/(gam + 1));
+ n=n+1;
+end
+n
+  hold on;
+ Damagecyc=plot ((1:n),Dcyc(1:n),'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 8, ...
+   'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'b');
+
+%---------------------3 Numerical method-----------------------------
 D=0;             %initial damage
 n=1;       %initial recording point
 G = (1 - (1 - D).^(gam + 1)).^(1-alp);
@@ -68,10 +114,12 @@ normSb=sqrt(sum(Sbtensor.^2));
         ((E-k)*(1+nu)/(2*E*(E+k*nu))*bsxfun(@times,[weight],bsxfun(@rdivide,bsxfun(@times,bsxfun(@minus,normtrial,bsxfun(@rdivide, yield,[s])),yield),[s])));
     
     W= sum(Ws);
-    G = G+W/WF;
+    G = G+(1-alp)*(gam+1)*W/WF;
     D(1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
 
-
+Dcyc(1)=0;
+Gcyc = (1 - (1 - Dcyc(1)).^(gam + 1)).^(1-alp);
+Wcyc=4*(E-k)*(1+nu)*(b-1)/(E*(E+k*nu)*b*(b+1))*norm(loadtensor-(1/3*sum(diag(loadtensor)))*diag([1,1,1]),'fro').^(b+1)*y.^(1-b) ;
 tic;
 while G<1
     stress11=load*sin((n)*2*pi/stepnumber);
@@ -111,7 +159,7 @@ while G<1
         ((E-k)*(1+nu)/(2*E*(E+k*nu))*bsxfun(@times,[weight],bsxfun(@rdivide,bsxfun(@times,bsxfun(@minus,normtrial,bsxfun(@rdivide, yield,[s])),yield),[s])));
     
     W= sum(Ws);
-    G = G+W/WF;
+    G = G+(1-alp)*(gam+1)*W/WF
     D(n+1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
     
 %     hold on;
@@ -129,94 +177,58 @@ while G<1
 %         'MarkerEdgeColor','k', 'MarkerFaceColor','k');
     
     
-    %---------------------Difference between cyclic load calculation and numerical method as function of time-----------------------------
-    %  Gcyc = Gcyc+Wcyc/stepnumber/WF
-    %  Dcyc=1-(1-Gcyc.^(1/(1-alp))).^(1/(gam + 1));
-    %  hold on
-    %  Damagecyc=plot (t,D-Dcyc,'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 6, ...
-    %    'MarkerEdgeColor',  'k', 'MarkerFaceColor' , 'k');
+%      %---------------------Difference between cyclic load calculation and numerical method as function of time-----------------------------
+%       Gcyc = Gcyc+(1-alp)*(gam+1)*Wcyc/stepnumber/WF;
+%       Dcyc(n+1)=1-(1-Gcyc.^(1/(1-alp))).^(1/(gam + 1));
+   
     n=n+1;
+    % t=n/stepnumber*1/f;
+    % disp(['Time to failure is ' num2str(t) ' s.']);
 end
 toc;
-n
-% t=n/stepnumber*1/f;
-% disp(['Time to failure is ' num2str(t) ' s.']);
-
-
-%---------------------Plot 3 methods-----------------------------
-figure(2);
+n  
  hold on;
   DamageN=plot ((1:n),D(1:n),'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 6, ...
    'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'm');
-%---------------------chaboche method-----------------------------
-alp=0.5;
-D(1)=0;             %initial damage
-n=1;       %initial recording point
-  G = (1 - (1 - D(1)).^(gam + 1)).^(1-alp);
-  m=1/3*sum(diag(loadtensor));
-  S1=loadtensor-m*diag([1,1,1]);
-  sqrj1=1/2*sqrt(1/2)*norm(S1,'fro');
-  M=ff^1.32024*(1-3*m/sigu);
-  while G<1
-  NF=1/((gam+1)*(1-alp))*(sqrj1/M)^(-gam);
-  G = G+1/stepnumber/NF
-  D(n+1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
-  t=n/stepnumber*1/f;
-  n=n+1;
-  end
-  hold on;
-  DamageC=plot ((1:n),D(1:n), 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 8, ...
-   'MarkerEdgeColor',  'g', 'MarkerFaceColor','none');
-%---------------------Cyclic load calculation-----------------------------
-Dcyc(1)=0;
-n=1;
-Gcyc = (1 - (1 - Dcyc(1)).^(gam + 1)).^(1-alp);
-Wcyc=4*(E-k)*(1+nu)*(b-1)/(E*(E+k*nu)*b*(b+1))*norm(loadtensor-(1/3*sum(diag(loadtensor)))*diag([1,1,1]),'fro').^(b+1)*y.^(1-b) ;
-while Gcyc< 1
- Gcyc = Gcyc+Wcyc/stepnumber/WF
- Dcyc(n+1)=1-(1-Gcyc.^(1/(1-alp))).^(1/(gam + 1));
- t=n/stepnumber*1/f;
- n=n+1;
-end
- hold on
- Damagecyc=plot ((1:n),Dcyc(1:n),'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 6, ...
-   'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'b');
-hTitle = title('Damage evolution comparison of three methods' ,'Fontsize' ,30);
-hYLabel = ylabel('Damage', 'Fontsize' ,30);
- hLegend=legend([DamageN,DamageC,Damagecyc],'Numerical method','Chaboche method',...
-   'Cyclic load calculation');
 
+% %---------------------Difference between cyclic load calculation and numerical method as function of time-----------------------------
+%      hold on
+%      Damagediff=plot ((Dcyc(1:n-600)-D(1:n-600)).*Dcyc(1:n-600).^-1,'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 6, ...
+%        'MarkerEdgeColor',  'k', 'MarkerFaceColor' , 'k');
+% grid on;
+% grid minor;
+% set(gca ,'FontSize',25);
+% hTitle = title('Relative difference between cyclic load calculation and numerical method' ,'Fontsize' ,30);
+% hXLabel = xlabel('Number of steps' ,'Fontsize' ,30);
+% hYLabel = ylabel('Relative difference', 'Fontsize' ,30);
+% % Adjust font
+% set(gca, 'FontName', 'Helvetica')
+% set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')
+% % Adjust axes properties
+% set(gca, 'Box', 'off', 'TickDir', 'out', 'TickLength', [.02 .02], ...
+%     'XMinorTick', 'on', 'YMinorTick', 'on', 'YGrid', 'on', ...
+%     'XColor', [.3 .3 .3], 'YColor', [.3 .3 .3], ...
+%     'LineWidth', 1)
+% set(gcf,'color','w'); %set figure background transparent
+% set(gca,'color','w'); %set axis transparent
+% % Maximize print figure
+% set(gcf,'outerposition',get(0,'screensize'));
+% set(gcf, 'PaperPositionMode', 'manual');
+% set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
+% set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
+%  saveas(gcf,'F:\Git\PhDreport\4Anew\figures\Damagediff.png');
 
-%---------------------Plot Trial and Sb evolution-----------------------------
-% figure(1);
-%  hold on;
-%   Trial8=plot ((1:n),normtrial(1:n,8),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize',10, ...
-%     'MarkerEdgeColor','r', 'MarkerFaceColor','none');
-%    Sb8=plot ((1:n),normSb(1:n,8),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 6, ...
-%     'MarkerEdgeColor','none', 'MarkerFaceColor',[96 96 96]/255);
-%   yield8=plot ((1:n),yield(1:n)*s(8).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 6, ...
-%     'MarkerEdgeColor', 'none', 'MarkerFaceColor','b');
-%   Trial1=plot ((1:n),normtrial(1:n,1),'LineStyle', 'none','LineWidth', 1,'Marker', 's', 'MarkerSize',10, ...
-%     'MarkerEdgeColor', [1 0.5 0], 'MarkerFaceColor','none');
-%     Sb1=plot ((1:n),normSb(1:n,1),'LineStyle', 'none','LineWidth', 1,'Marker', 's', 'MarkerSize',6, ...
-%     'MarkerEdgeColor','none', 'MarkerFaceColor','g');
-%   yield1=plot ((1:n),yield(1:n)*s(1).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 6, ...
-%     'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'c');
-%---------------------plot settings-----------------------------
 grid on;
 grid minor;
-set(gca ,'FontSize',20);
-hXLabel = xlabel('t(s)' ,'Fontsize' ,20);
-hTitle = title('Microscopic stress evolution at 2 scales' ,'Fontsize' ,20);
-hYLabel = ylabel('Stress(Pa)', 'Fontsize' ,20);
-hLegend=legend([yield1,Sb1,Trial1,yield8,Sb8,Trial8],'(\sigma_y-\lambda\Sigma_H)/s_1     at scale s_1','||S-b||              at scale s_1',...
-    '||S-b||_{trial}         at scale s_1', '(\sigma_y-\lambda\Sigma_H)/s_8     at scale s_{8}','||S-b||              at scale s_{8}','||S-b||_{trial}         at scale s_{8}');
+hTitle = title('Damage evolution comparison of three methods' ,'Fontsize' ,30);
+hXLabel = xlabel('Number of steps' ,'Fontsize' ,30);
+hYLabel = ylabel('Damage', 'Fontsize' ,30);
+ hLegend=legend([DamageN,DamageCha,Damagecyc],'Numerical method','Chaboche method',...
+   'Cyclic load calculation');
 set([hLegend, gca], 'FontSize', 20)
 % Adjust font
 set(gca, 'FontName', 'Helvetica')
 set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')
-set([hXLabel, hYLabel], 'FontSize', 20)
-set(hTitle, 'FontSize', 20, 'FontWeight' , 'bold')
 % Adjust axes properties
 set(gca, 'Box', 'off', 'TickDir', 'out', 'TickLength', [.02 .02], ...
     'XMinorTick', 'on', 'YMinorTick', 'on', 'YGrid', 'on', ...
@@ -231,7 +243,63 @@ set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | point
 set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 % saveas(gcf,'F:\Git\PhDreport\4Anew\figures\damagesin.png');
 
-% saveas(gcf,'trialsin with D.png');
+% %---------------------Cyclic load calculation before integration-----------------------------
+% Dstar(1)=1e-15;
+% n=1;
+% while Dstar(n)<1
+%  Dstar(n+1)=Dstar(n)+(1-(1-Dstar(n))^(gam+1))^alp*(1-Dstar(n))^-(b+1)*Wcyc/stepnumber/WF;
+%  n=n+1;
+% end
+% n
+% t=n/stepnumber*1/f;
+%  hold on
+%  Damagestar=plot ((1:n),Dstar(1:n),'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 10, ...
+%    'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'r');
+%  hLegend=legend([DamageN,DamageCha,Damagecyc,Damagestar],'Numerical method','Chaboche method',...
+%    'Cyclic load calculation','Cyclic before integration');
+
+% %---------------------Plot Trial and Sb evolution-----------------------------
+% figure(1);
+%  hold on;
+%   Trial1=plot ((1:n),normtrial(1:n,1),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize',12, ...
+%     'MarkerEdgeColor','r', 'MarkerFaceColor','none');
+%   Trial61=plot ((1:n),normtrial(1:n,61),'LineStyle', 'none','LineWidth', 1,'Marker', 's', 'MarkerSize',12, ...
+%     'MarkerEdgeColor', [1 0.5 0], 'MarkerFaceColor','none');
+%    Sb1=plot ((1:n),normSb(1:n,1),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 8, ...
+%     'MarkerEdgeColor','none', 'MarkerFaceColor',[96 96 96]/255);
+%    Sb61=plot ((1:n),normSb(1:n,61),'LineStyle', 'none','LineWidth', 1,'Marker', 's', 'MarkerSize',8, ...
+%     'MarkerEdgeColor','none', 'MarkerFaceColor','g');
+%   yield1=plot ((1:n),yield(1:n)*s(1).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 8, ...
+%     'MarkerEdgeColor', 'none', 'MarkerFaceColor','b');
+%   yield61=plot ((1:n),yield(1:n)*s(61).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 8, ...
+%     'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'c');
+% %---------------------plot settings-----------------------------
+% grid on;
+% grid minor;
+% set(gca ,'FontSize',20);
+% hXLabel = xlabel('t(s)' ,'Fontsize' ,20);
+% hYLabel = ylabel('Stress(Pa)', 'Fontsize' ,20);
+% hTitle = title('Microscopic stress evolution at 2 scales' ,'Fontsize' ,20);
+% set(hTitle, 'FontSize', 20, 'FontWeight' , 'bold')
+% hLegend=legend([yield1,Sb1,Trial1,yield8,Sb8,Trial8],'(\sigma_y-\lambda\Sigma_H)/s_1     at scale s_1','||S-b||              at scale s_1',...
+%     '||S-b||_{trial}         at scale s_1', '(\sigma_y-\lambda\Sigma_H)/s_8     at scale s_{8}','||S-b||              at scale s_{8}','||S-b||_{trial}         at scale s_{8}');
+% set([hLegend, gca], 'FontSize', 20)
+% % Adjust font
+% set(gca, 'FontName', 'Helvetica')
+% set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')
+% % Adjust axes properties
+% set(gca, 'Box', 'off', 'TickDir', 'out', 'TickLength', [.02 .02], ...
+%     'XMinorTick', 'on', 'YMinorTick', 'on', 'YGrid', 'on', ...
+%     'XColor', [.3 .3 .3], 'YColor', [.3 .3 .3], ...
+%     'LineWidth', 1)
+% set(gcf,'color','w'); %set figure background transparent
+% set(gca,'color','w'); %set axis transparent
+% % Maximize print figure
+% set(gcf,'outerposition',get(0,'screensize'));
+% set(gcf, 'PaperPositionMode', 'manual');
+% set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
+% set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
+% % saveas(gcf,'trialsin with D.png');
 
 
 %sp=actxserver('SAPI.SpVoice');
