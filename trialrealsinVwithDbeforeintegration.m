@@ -1,6 +1,5 @@
 
 % Program to get the Gauss-Legendre Quadrature results (Vectorized)
-profile on
 clear;clc;
 
 dbstop if error
@@ -26,7 +25,7 @@ format long e
 
 E=2e11;               %Young¡¯s modulus
 k=6e8;                  %hardening parameter
-b=1.5;                      %weakening scales distribution exponent (between 1 and 2)
+b=1.5;                      %weakening scales distribution exponent
 nu=0.3;                 %poisson's ratio
 tt=2e8;                  %torsion fatigue limit
 ff=2.5e8;              %bending fatigue limit
@@ -51,7 +50,7 @@ WF=5e8;             %dissipated energy to failure per unit volume
 %   m=1/3*sum(diag(loadtensor));
 %   S1=loadtensor-m*diag([1,1,1]);
 %   sqrj1=1/2*sqrt(1/2)*norm(S1,'fro');
-%   M=31.5475*ff*(1-3*m/sigu);
+%   M=12.4262*ff*(1-3*m/sigu);
 %   while G<1
 %   NF=1/((gam+1)*(1-alp))*(sqrj1/M)^(-gam);
 %   G = G+(1-alp)*(gam + 1)/stepnumber/NF;
@@ -89,14 +88,12 @@ WF=5e8;             %dissipated energy to failure per unit volume
 % %  hold on
 % %  Damagestar=plot ((1:n),Dstar(1:n),'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 10, ...
 % %    'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'r');
-%---------------------3 Numerical method-----------------------------
-D=0;
-G = (1 - (1 - D).^(gam + 1)).^(1-alp);
-D= zeros(1,1e6); %Pre-allocate memory for vectors
-n=1;       %initial recording point
 
+%---------------------3 Numerical method before integration-----------------------------
+D=1e-16;       %initial damage
+n=1;       %initial recording point
 %---------------------to get the the first Sb-----------------------------
-stress11=load*sin(1*2*pi/stepnumber);
+stress11=load*sin(2*pi/stepnumber);
 m=1/3*sum(stress11+0+0);
 dev1=[stress11 0 0 ;0 0 0 ;0 0 0 ]-m*diag([1,1,1]);
 dev11=dev1(1,1); dev12=dev1(1,3); dev13=dev1(1,3);
@@ -109,8 +106,8 @@ trial21=dev21; trial22=dev22; trial23=dev23;
 trial31=dev31; trial32=dev32; trial33=dev33;
 
 normtrial(1)=norm([trial11, trial12, trial13; trial21, trial22, trial23;trial31, trial32, trial33],'fro');
-% yield=y*(1-D(n))^delta;
-yield=y;
+yield=y*(1-D(n))^delta;
+% yield=y;
 eta=bsxfun(@minus,bsxfun(@times,normtrial(1)/yield,s),1); %1*25
 eta(eta<0)=0;
 
@@ -121,18 +118,18 @@ Sb31=bsxfun(@rdivide,trial31,bsxfun(@plus,eta,1));Sb32=bsxfun(@rdivide,trial32,b
 Sbtensor=[Sb11; Sb12; Sb13; Sb21; Sb22; Sb23;Sb31; Sb32; Sb33];
 normSb=sqrt(sum(Sbtensor.^2));
 % existsOnGPU(normSb)
-Ws=(bsxfun(@minus,normtrial,bsxfun(@rdivide, yield,s))<=0).*...
-    (0)+...
-    (bsxfun(@minus,normtrial,bsxfun(@rdivide, yield,s))>0).*...
-    ((E-k)*(1+nu)/(2*E*(E+k*nu))*bsxfun(@times,weight,bsxfun(@rdivide,bsxfun(@times,bsxfun(@minus,normtrial,bsxfun(@rdivide, yield,s)),yield),s)));
+    Ws=(bsxfun(@minus,normtrial,bsxfun(@rdivide, yield,[s]))<=0).*...
+        (0)+...
+        (bsxfun(@minus,normtrial,bsxfun(@rdivide, yield,[s]))>0).*...
+        ((E-k)*(1+nu)/(2*E*(E+k*nu))*bsxfun(@times,[weight],bsxfun(@rdivide,bsxfun(@times,bsxfun(@minus,normtrial,bsxfun(@rdivide, yield,[s])),yield),[s])));
+    
+    W= sum(Ws);
+    D(1)=D+(1-(1-D)^(gam+1))^alp*W/WF;
 
-W= sum(Ws);
-G = G+(1-alp)*(gam + 1)*W/WF;
-D(1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
+    tic;
 
-tic;
-while G<1
-    stress11=load*sin(n*2*pi/stepnumber);
+while D(n)<0.9
+    stress11=load*sin((n)*2*pi/stepnumber);
     m=1/3*sum(stress11+0+0);
     dev1=[stress11 0 0 ;0 0 0 ;0 0 0 ]-m*diag([1,1,1]);
     dev11=dev1(1,1); dev12=dev1(1,2); dev13=dev1(1,3);
@@ -151,8 +148,8 @@ while G<1
     trial31=bsxfun(@plus,Sb31,(dev31g-dev31)); trial32=bsxfun(@plus,Sb32,(dev32g-dev32));trial33=bsxfun(@plus,Sb33,(dev33g-dev33));
     trialtensor=[trial11; trial12; trial13; trial21; trial22; trial23;trial31; trial32; trial33];
     normtrial=sqrt(sum(trialtensor.^2));
-    %     yield=y*(1-0.9*D(n))^delta;% yield function evolve with damage D
-    yield=y;
+yield=y*(1-D(n))^delta;% yield function evolve with damage D
+%     yield=y;
     eta=bsxfun(@minus,bsxfun(@times,normtrial/yield,s),1); %1*25
     eta(eta<0)=0;
     
@@ -163,38 +160,40 @@ while G<1
     Sbtensor=[Sb11; Sb12; Sb13; Sb21; Sb22; Sb23;Sb31; Sb32; Sb33];
     normSb=sqrt(sum((Sbtensor.^2)));
     
-    Ws=(bsxfun(@minus,normtrial,bsxfun(@rdivide, yield,s))<=0).*...
+    Ws=(bsxfun(@minus,normtrial,bsxfun(@rdivide, yield,[s]))<=0).*...
         (0)+...
-        (bsxfun(@minus,normtrial,bsxfun(@rdivide, yield,s))>0).*...
-        ((E-k)*(1+nu)/(2*E*(E+k*nu))*bsxfun(@times,weight,bsxfun(@rdivide,bsxfun(@times,bsxfun(@minus,normtrial,bsxfun(@rdivide, yield,s)),yield),s)));
+        (bsxfun(@minus,normtrial,bsxfun(@rdivide, yield,[s]))>0).*...
+        ((E-k)*(1+nu)/(2*E*(E+k*nu))*bsxfun(@times,[weight],bsxfun(@rdivide,bsxfun(@times,bsxfun(@minus,normtrial,bsxfun(@rdivide, yield,[s])),yield),[s])));
     
     W= sum(Ws);
-    G = G+(1-alp)*(gam + 1)*W/WF;
-    D(n+1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
+    D(n+1)=D(n)+(1-(1-D(n))^(gam+1))^alp*W/WF;
     
-    %     hold on;
-    %     yield1=plot (n,yield*s(45).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 10, ...
-    %         'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'c');
-    %     Trial1=plot (n,sign(trial11(45))*normtrial(45),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
-    %         'MarkerEdgeColor','r', 'MarkerFaceColor','r');
-    %     Sb1=plot (n,sign(Sb11(45))*normSb(45),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
-    %         'MarkerEdgeColor','g', 'MarkerFaceColor','g');
-    %     yield8=plot (n,yield*s(61).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 10, ...
-    %         'MarkerEdgeColor', 'none', 'MarkerFaceColor', 'b');
-    %     Trial8=plot (n,sign(trial11(61))*normtrial(61),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
-    %         'MarkerEdgeColor', [1 0.5 0], 'MarkerFaceColor',[1 0.5 0]);
-    %     Sb8=plot (n,sign(Sb11(61))*normSb(61),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
-    %         'MarkerEdgeColor','k', 'MarkerFaceColor','k');
+%     hold on;
+%     yield1=plot (n,yield*s(45).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 10, ...
+%         'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'c');
+%     Trial1=plot (n,sign(trial11(45))*normtrial(45),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
+%         'MarkerEdgeColor','r', 'MarkerFaceColor','r');
+%     Sb1=plot (n,sign(Sb11(45))*normSb(45),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
+%         'MarkerEdgeColor','g', 'MarkerFaceColor','g');
+%     yield8=plot (n,yield*s(61).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 10, ...
+%         'MarkerEdgeColor', 'none', 'MarkerFaceColor', 'b');
+%     Trial8=plot (n,sign(trial11(61))*normtrial(61),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
+%         'MarkerEdgeColor', [1 0.5 0], 'MarkerFaceColor',[1 0.5 0]);
+%     Sb8=plot (n,sign(Sb11(61))*normSb(61),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
+%         'MarkerEdgeColor','k', 'MarkerFaceColor','k');
+   
     n=n+1;
+
 end
 toc;
-
-% t=n/stepnumber*1/f;
-% disp(['Time to failure is ' num2str(t) ' s.']);
-hold on;
-DamageN=plot ((1:n),D(1:n),'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 6, ...
-    'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'm');
-
+n  
+    % t=n/stepnumber*1/f;
+    % disp(['Time to failure is ' num2str(t) ' s.']);
+ hold on;
+  DamageN=plot ((1:n),D(1:n),'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 6, ...
+   'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'm');
+  yield=plot ((1:n),y*(1-D(1:n)).^delta,'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 6, ...
+   'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'm');
 % %---------------------Difference between cyclic load calculation and numerical method as function of time-----------------------------
 %      hold on
 %      Damagediff=plot ((Dcyc(1:n-600)-D(1:n-600)).*Dcyc(1:n-600).^-1,'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 6, ...
@@ -202,7 +201,7 @@ DamageN=plot ((1:n),D(1:n),'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'M
 % grid on;
 % grid minor;
 % set(gca ,'FontSize',25);
-% hTitle = title('Relative difference between cyclic load calculation and numerical method' ,'Fontsize' ,38);
+% hTitle = title('Relative difference between cyclic load calculation and numerical method' ,'Fontsize' ,30);
 % hXLabel = xlabel('Number of steps' ,'Fontsize' ,30);
 % hYLabel = ylabel('Relative difference', 'Fontsize' ,30);
 % % Adjust font
@@ -227,10 +226,9 @@ grid minor;
 hTitle = title('Damage evolution comparison of three methods' ,'Fontsize' ,30);
 hXLabel = xlabel('Number of steps' ,'Fontsize' ,30);
 hYLabel = ylabel('Damage', 'Fontsize' ,30);
-%  hLegend=legend([DamageN,DamageCha,Damagecyc],'Numerical method','Chaboche method',...
-%    'Cyclic load calculation');
-% set([hLegend, gca], 'FontSize', 20)
-
+ hLegend=legend([DamageN,DamageCha,Damagecyc],'Numerical method','Chaboche method',...
+   'Cyclic load calculation');
+set([hLegend, gca], 'FontSize', 20)
 % Adjust font
 set(gca, 'FontName', 'Helvetica')
 set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')
@@ -299,5 +297,3 @@ set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,botto
 %sp=actxserver('SAPI.SpVoice');
 % sp.Speak('Fuck that I finished all this shit finally');
 %mail2me('job finished',['Elapsed time is ' num2str(toc) ' seconds. Real test time is ' testtime ' seconds. Number of points to failure is ' NF ' points.']);
-profile off
-profile viewer
