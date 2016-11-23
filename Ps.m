@@ -5,10 +5,13 @@ s=1:0.001:30;
 beta=1.5;
 c=beta-1;
 p=c*s.^-beta;
+cum=1-s.^(1-beta);
+hold on
 %loglog(s,p,'r')
-
-plot(s,p,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 10, ...
+plot(s,p,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 1, ...
       'MarkerEdgeColor','none', 'MarkerFaceColor',[238 180 34]/255);
+h=area(s,p,'LineStyle', 'none','LineWidth', 1);
+set(h,'FaceColor',[238 180 34]/255);
 set(gca,'FontSize',25);
 set(gca,'xtick',1:5:30,'xticklabel',1:5:30) 
 %xtick shows the ticks, xticklabel gives the tick names.
@@ -18,7 +21,7 @@ grid on;
 %grid minor;
 hTitle = title('Weakening scales distribution curve','Fontsize',35);
 hXLabel = xlabel('Scale s','Fontsize',30);
-hYLabel = ylabel('Probability P(s)','Fontsize',30);
+hYLabel = ylabel('Probability distribution function P(s)','Fontsize',30);
 set(gca, 'FontName', 'Helvetica')
 set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')
 % Adjust axes properties
@@ -35,3 +38,4 @@ set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | point
 set(gcf, 'PaperPosition', [0 0 1920 1080]); 
 
 % saveas(gcf,'F:\Git\PhDreport\4Anew\figures\ps.png');
+% saveas(gcf,'F:\Git\Anew\figures\ps.png');

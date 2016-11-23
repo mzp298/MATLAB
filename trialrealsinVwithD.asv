@@ -50,7 +50,7 @@ D= zeros(1,1e6); %Pre-allocate memory for vectors
 n=1;       %initial recording point
 
 %---------------------to get the the first Sb-----------------------------
-stress11=load*sind(n*360/stepnumber);
+stress11=load*sin(1*2*pi/stepnumber);
 m=1/3*sum(stress11+0+0);
 dev1=[stress11 0 0 ;0 0 0 ;0 0 0 ]-m*diag([1,1,1]);
 dev11=dev1(1,1); dev12=dev1(1,3); dev13=dev1(1,3);
@@ -87,20 +87,20 @@ D(1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
 
 tic;
 while n<300
-    stress11=load*sind(n*360/stepnumber);
+    stress11=load*sin(n*2*pi/stepnumber);
     m=1/3*sum(stress11+0+0);
     dev1=[stress11 0 0 ;0 0 0 ;0 0 0 ]-m*diag([1,1,1]);
     dev11=dev1(1,1); dev12=dev1(1,2); dev13=dev1(1,3);
     dev21=dev1(2,1); dev22=dev1(2,2); dev23=dev1(2,3);
     dev31=dev1(3,1); dev32=dev1(3,2); dev33=dev1(3,3);
-        
-    stress11=load*sind((n+1)*360/stepnumber);
+    
+    stress11=load*sin((n+1)*2*pi/stepnumber);
     m=1/3*sum(stress11+0+0);
     devn=[stress11 0 0;0 0 0;0 0 0]-m*diag([1,1,1]);
+    normdev=norm(devn,'fro');
     dev11g=devn(1,1); dev12g=devn(1,2); dev13g=devn(1,3);
     dev21g=devn(2,1); dev22g=devn(2,2); dev23g=devn(2,3);
     dev31g=devn(3,1); dev32g=devn(3,2); dev33g=devn(3,3);
-    normdev=norm(devn,'fro');
     
     trial11=bsxfun(@plus,Sb11,(dev11g-dev11)); trial12=bsxfun(@plus,Sb12,(dev12g-dev12));trial13=bsxfun(@plus,Sb13,(dev13g-dev13));
     trial21=bsxfun(@plus,Sb21,(dev21g-dev21)); trial22=bsxfun(@plus,Sb22,(dev22g-dev22));trial23=bsxfun(@plus,Sb23,(dev23g-dev23));
@@ -129,25 +129,24 @@ normSb=sqrt(sum(Sbtensor.^2)); %sum(a) sums all the colume
     D(n+1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
     
         hold on;
-        yield1=plot (n+1,yield*s(33).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 8, ...
+        yield1=plot (n,yield*s(29).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 8, ...
             'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'c');
-        yield1n= plot (n+1,-yield*s(33).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 8, ...
+        yield1n= plot (n,-yield*s(29).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 8, ...
             'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'c');
-        Trial1=plot (n+1,sign(trial11(33))*normtrial(33),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
+        Trial1=plot (n,sign(trial11(29))*normtrial(29),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
             'MarkerEdgeColor','r', 'MarkerFaceColor','r');
-        Sb1=plot (n+1,sign(Sb11(33))*normSb(33),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
+        Sb1=plot (n,sign(Sb11(29))*normSb(29),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
             'MarkerEdgeColor','g', 'MarkerFaceColor','g');
-        dev=plot (n+1,sign(sind((n+1)*360/stepnumber))*normdev,'LineStyle', 'none','LineWidth', 1,'Marker', 's', 'MarkerSize', 11, ...
-            'MarkerEdgeColor','none', 'MarkerFaceColor',[238 18 137]/255);
-        yield8=plot (n+1,yield*s(40).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 8, ...
+        dev=plot (n,sign(sin(n*2*pi/stepnumber))*normdev,'LineStyle', 'none','LineWidth', 1,'Marker', 's', 'MarkerSize', 10, ...
+            'MarkerEdgeColor','none', 'MarkerFaceColor',[238 29 137]/255);
+        yield8=plot (n,yield*s(40).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 8, ...
             'MarkerEdgeColor', 'none', 'MarkerFaceColor', 'b');
-                yield8n=plot (n+1,-yield*s(40).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 8, ...
+                yield8n=plot (n,-yield*s(40).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 8, ...
             'MarkerEdgeColor', 'none', 'MarkerFaceColor', 'b');
-        Trial8=plot (n+1,sign(trial11(40))*normtrial(40),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
+        Trial8=plot (n,sign(trial11(40))*normtrial(40),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
             'MarkerEdgeColor', [1 0.5 0], 'MarkerFaceColor',[1 0.5 0]);
-        Sb8=plot (n+1,sign(Sb11(40))*normSb(40),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
+        Sb8=plot (n,sign(Sb11(40))*normSb(40),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
             'MarkerEdgeColor','k', 'MarkerFaceColor','k');
-        
     n=n+1;
 end
 toc;
@@ -304,34 +303,32 @@ set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,botto
 %   yield61=plot ((1:n),yield(1:n)*s(61).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 8, ...
 %     'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'c');
 % %---------------------plot settings-----------------------------
-grid on;
-grid minor;
-set(gca ,'FontSize',30);
-hXLabel = xlabel('t(s)' ,'Fontsize' ,30);
-hYLabel = ylabel('Stress(Pa)', 'Fontsize' ,30);
-hTitle = title('Microscopic stress evolution at 2 scales' ,'Fontsize' ,30);
-set(hTitle, 'FontSize', 30, 'FontWeight' , 'bold')
-hLegend=legend([dev,yield1,Sb1,Trial1,yield8,Sb8,Trial8],'|dev\Sigma|','(\sigma_y-\lambda\Sigma_H)/s_{33}     at scale s_{33}','||S-b||                at scale s_{33}',...
-    '||S-b||_{trial}           at scale s_{33}', '(\sigma_y-\lambda\Sigma_H)/s_{40}     at scale s_{40}',...
-    '||S-b||                at scale s_{40}','||S-b||_{trial}           at scale s_{40}','Location','Best');
-set([hLegend, gca], 'FontSize', 20)
-set(hLegend,'Box','on');
-% Adjust font
-set(gca, 'FontName', 'Helvetica')
-set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')
-% Adjust axes properties
-set(gca, 'Box', 'off', 'TickDir', 'out', 'TickLength', [.02 .02], ...
-    'XMinorTick', 'on', 'YMinorTick', 'on', 'YGrid', 'on', ...
-    'XColor', [.3 .3 .3], 'YColor', [.3 .3 .3], ...
-    'LineWidth', 1)
-set(gcf,'color','w'); %set figure background transparent
-set(gca,'color','w'); %set axis transparent
-% Maximize print figure
-set(gcf,'outerposition',get(0,'screensize'));
-set(gcf, 'PaperPositionMode', 'manual');
-set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
-set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
-% saveas(gcf,'trialsin with D.png');
+% grid on;
+% grid minor;
+% set(gca ,'FontSize',20);
+% hXLabel = xlabel('t(s)' ,'Fontsize' ,20);
+% hYLabel = ylabel('Stress(Pa)', 'Fontsize' ,20);
+% hTitle = title('Microscopic stress evolution at 2 scales' ,'Fontsize' ,20);
+% set(hTitle, 'FontSize', 20, 'FontWeight' , 'bold')
+% hLegend=legend([yield1,Sb1,Trial1,yield8,Sb8,Trial8],'(\sigma_y-\lambda\Sigma_H)/s_1     at scale s_1','||S-b||              at scale s_1',...
+%     '||S-b||_{trial}         at scale s_1', '(\sigma_y-\lambda\Sigma_H)/s_8     at scale s_{8}','||S-b||              at scale s_{8}','||S-b||_{trial}         at scale s_{8}');
+% set([hLegend, gca], 'FontSize', 20)
+% % Adjust font
+% set(gca, 'FontName', 'Helvetica')
+% set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')
+% % Adjust axes properties
+% set(gca, 'Box', 'off', 'TickDir', 'out', 'TickLength', [.02 .02], ...
+%     'XMinorTick', 'on', 'YMinorTick', 'on', 'YGrid', 'on', ...
+%     'XColor', [.3 .3 .3], 'YColor', [.3 .3 .3], ...
+%     'LineWidth', 1)
+% set(gcf,'color','w'); %set figure background transparent
+% set(gca,'color','w'); %set axis transparent
+% % Maximize print figure
+% set(gcf,'outerposition',get(0,'screensize'));
+% set(gcf, 'PaperPositionMode', 'manual');
+% set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
+% set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
+% % saveas(gcf,'trialsin with D.png');
 
 
 %sp=actxserver('SAPI.SpVoice');
