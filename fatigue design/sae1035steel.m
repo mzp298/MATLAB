@@ -37,9 +37,10 @@ text(0.2,ff,'ref','Fontsize',30);
 
 hTitle=title({['SAE 1035 steel'],[  'Rotating Cantilever Bending'],[ '(data from Moore 1944)']; },'Fontsize',30);
 set(hTitle, 'FontSize', 30, 'FontWeight' , 'bold')
-hLegend=legend([class,fr,frp,frd],'Crossland\_Classical','Crossland\_Gradient','Papadopoulos\_Gradient','DangVan\_Gradient');
+hLegend = legend([class,fr,frp,frd],'Crossland\_Classical','Crossland\_Gradient','Papadopoulos\_Gradient','DangVan\_Gradient');
 set([hLegend, gca], 'FontSize', 25)
 set(hLegend,'Box','on');
+set(hLegend,'EdgeColor',[1 1 1]); %set the edge colour of the legend to white 
 % Adjust font
 set(gca, 'FontName', 'Helvetica')
 set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')

@@ -27,26 +27,23 @@ papagrad= sqrt(sig^2/3+tau^2)+ap*sig/3-lgp*(sqrt(sig^2/3+tau^2)/y+ap*sig/(3*y))-
 dangvangrad=sqrt(sig^2/4+tau^2)+ad*sig/3-lgd*(sqrt(sig^2/4+tau^2)/y+ad*sig/(3*y))-bd;
 
 hold on	
-set(ezplot(cross,[0,500,0,350]),'Color',[193 205 193]/255,'LineStyle', '-', 'LineWidth', 4);
-set(ezplot(papaf,[0,500,0,350]),'Color','k','LineStyle', '--', 'LineWidth',4);
-set(ezplot(crossgrad,[0,500,0,350]),'Color',[238 99 99]/255,'LineStyle', '-', 'LineWidth', 4);
-set(ezplot(papagrad,[0,500,0,350]) ,'Color',[160 32 240]/255,'LineStyle', ' :', 'LineWidth', 4);
-set(ezplot(dangvangrad,[0,500,0,350]),'Color',[238 180 34]/255,'LineStyle', '-.', 'LineWidth', 4);
-
-plot(0,t,'o','MarkerSize',20, 'MarkerFaceColor','k', 'MarkerEdgeColor',[1 0.5 0]);
-plot(155,270,'o','MarkerSize',20, 'MarkerFaceColor','k', 'MarkerEdgeColor',[1 0.5 0]);
-plot(260,235,'o','MarkerSize',20, 'MarkerFaceColor','k', 'MarkerEdgeColor',[1 0.5 0]);
-plot(360,175,'o','MarkerSize',20, 'MarkerFaceColor','k', 'MarkerEdgeColor',[1 0.5 0]);
-plot(f,0,'o','MarkerSize',20, 'MarkerFaceColor','k', 'MarkerEdgeColor',[1 0.5 0]);
-plot(sref,0,'o','MarkerSize',20, 'MarkerFaceColor','k', 'MarkerEdgeColor',[1 0.5 0]);
+Crossland_Classical = set(ezplot(cross,[0,500,0,350]),'Color',[193 205 193]/255,'LineStyle', '-', 'LineWidth', 4);
+Papadopoulos_tf = set(ezplot(papaf,[0,500,0,350]),'Color','k','LineStyle', '--', 'LineWidth',4);
+Crossland_Gradient = set(ezplot(crossgrad,[0,500,0,350]),'Color',[238 99 99]/255,'LineStyle', '-', 'LineWidth', 4);
+Papadopoulos_Gradient = set(ezplot(papagrad,[0,500,0,350]) ,'Color',[160 32 240]/255,'LineStyle', ' :', 'LineWidth', 4);
+DangVan_Gradient = set(ezplot(dangvangrad,[0,500,0,350]),'Color',[238 180 34]/255,'LineStyle', '-.', 'LineWidth', 4);
+sigma = [0 155 260 360 f sref];
+tau     = [t 270 235 175 0 0];
+exp = plot(sigma, tau, 'o','MarkerSize',20, 'MarkerFaceColor','k', 'MarkerEdgeColor',[1 0.5 0]);
 hold off;
+
 grid on;
 set(gca ,'FontSize',30);
 hTitle = title({['SAE 4340 steel'],[ 'Fully reversed bending and torsion'],[ '(data from Findley)']; });
 set(hTitle, 'FontSize', 23, 'FontWeight' , 'bold');
 hXLabel =  xlabel('\sigma_a(MPa)','Fontsize',30);
 hYLabel =  ylabel('\tau_a(Mpa)','Fontsize',30);
-hLegend = legend('Crossland\_Classical','Papadopoulos\_based on (t,f)','Crossland\_Gradient','Papadopoulos\_Gradient','DangVan\_Gradient','Location','bestoutside');
+hLegend = legend('Crossland\_Classical','Papadopoulos\_based on (t,f)','Crossland\_Gradient','Papadopoulos\_Gradient','DangVan\_Gradient','Experiments','Location','bestoutside');
 set([hLegend, gca], 'FontSize', 20)
 set(hLegend,'Box','off');
 text(340,22,'S_{ref}','Fontsize',30);
