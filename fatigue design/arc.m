@@ -43,7 +43,8 @@ hTitle = title({['SAE 4340 steel'],[ 'Fully reversed bending and torsion'],[ '(d
 set(hTitle, 'FontSize', 23, 'FontWeight' , 'bold');
 hXLabel =  xlabel('\sigma_a(MPa)','Fontsize',30);
 hYLabel =  ylabel('\tau_a(Mpa)','Fontsize',30);
-hLegend = legend('Crossland\_Classical','Papadopoulos\_based on (t,f)','Crossland\_Gradient','Papadopoulos\_Gradient','DangVan\_Gradient','Experiments','Location','bestoutside');
+hLegend = legend('Crossland\_Classical','Papadopoulos\_based on (t,f)','Crossland\_Gradient',...
+    'Papadopoulos\_Gradient','DangVan\_Gradient','Experiments','Location','bestoutside');
 set([hLegend, gca], 'FontSize', 20)
 set(hLegend,'Box','off');
 text(340,22,'S_{ref}','Fontsize',30);

@@ -87,16 +87,15 @@ sigu=8e8;             %ultimite stress
 gam=b+1;    %material parameter from Chaboche law(Wohler curve exponent)
 samplerate=256;   %recorded samples per second
 delta=(b+1)/(b-1); %yield stress degradation sensitivity with D
-
+n0=10;                   %number of initial local defects
 %---------------------Vecterization-----------------------------
 
-WF=3e7;             %dissipated energy to failure per unit volume
-alp=0.8;
+WF=3e8;             %dissipated energy to failure per unit volume
 D=0;                    %initial damage
 n=1;                      %initial recording point
 step=1/samplerate/ari;
 t=n*step;
-G = (1 - (1 - D).^(gam + 1)).^(1-alp);
+G = 0;
 yield = zeros(size(forcelx)); %Pre-allocate memory for vectors
 D = yield;
 normSb  = zeros(length(forcelx),length(x)); %Pre-allocate memory for tensors
@@ -111,6 +110,7 @@ dev1=[stress11(1) stress12(1) stress13(1);stress21(1) stress22(1) stress23(1);st
 dev11=dev1(1,1); dev12=dev1(1,2); dev13=dev1(1,3);
 dev21=dev1(2,1); dev22=dev1(2,2); dev23=dev1(2,3);
 dev31=dev1(3,1); dev32=dev1(3,2); dev33=dev1(3,3);
+Smax=norm(dev1,'fro');
 
 trial11=dev11; trial12=dev12; trial13=dev13;
 trial21=dev21; trial22=dev22; trial23=dev23;
@@ -132,7 +132,8 @@ Ws=(bsxfun(@minus,normtrial(1,1:length(x)),bsxfun(@rdivide, yield(1),s))<=0).*..
     (bsxfun(@minus,normtrial(1,1:length(x)),bsxfun(@rdivide, yield(1),s))>0).*...
     ((E-k)*(1+nu)/(2*E*(E+k*nu))*bsxfun(@times,weight,bsxfun(@rdivide,bsxfun(@times,bsxfun(@minus,normtrial(1,1:length(x)),bsxfun(@rdivide, yield(1),s)),yield(1)),s)));
 W= sum(Ws);
-G = G+(1-alp)*(gam+1)*W/WF; %1.322163316411401e-03
+alp=1-W*((1-Smax/yield(1))*sigu)^-1;
+G = G+n0*(1-alp)*(gam+1)*W/WF; %1.322163316411401e-03
 D(1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
 
 tic;
@@ -152,6 +153,7 @@ while G<1
     dev11g=devn(1,1); dev12g=devn(1,2); dev13g=devn(1,3);
     dev21g=devn(2,1); dev22g=devn(2,2); dev23g=devn(2,3);
     dev31g=devn(3,1); dev32g=devn(3,2); dev33g=devn(3,3);
+    Smax=norm(devn,'fro');
     trial11=bsxfun(@plus,Sb11,(dev11g-dev11)); trial12=bsxfun(@plus,Sb12,(dev12g-dev12));trial13=bsxfun(@plus,Sb13,(dev13g-dev13));
     trial21=bsxfun(@plus,Sb21,(dev21g-dev21)); trial22=bsxfun(@plus,Sb22,(dev22g-dev22));trial23=bsxfun(@plus,Sb23,(dev23g-dev23));
     trial31=bsxfun(@plus,Sb31,(dev31g-dev31)); trial32=bsxfun(@plus,Sb32,(dev32g-dev32));trial33=bsxfun(@plus,Sb33,(dev33g-dev33));
@@ -174,7 +176,8 @@ while G<1
         (bsxfun(@minus,normtrial(n+1,:),bsxfun(@rdivide, yield(n+1),s))>0).*...
         ((E-k)*(1+nu)/(2*E*(E+k*nu))*bsxfun(@times,weight,bsxfun(@rdivide,bsxfun(@times,bsxfun(@minus,normtrial(n+1,:),bsxfun(@rdivide, yield(n+1),s)),yield(n+1)),s)));
     W= sum(Ws);
-    G = G+(1-alp)*(gam+1)*W/WF;
+    alp=1-W*((1-Smax/yield(n+1))*sigu)^-1;
+    G = G+n0*(1-alp)*(gam+1)*W/WF;
     D(n+1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
     t=n*step;
     %            hold on;
@@ -210,50 +213,50 @@ testtime=num2str(t);
 % sp=actxserver('SAPI.SpVoice');
 % sp.Speak('I finished all the work finally. oh la la');
 
-% %---------------------Plot Trial and Sb evolution-----------------------------
-% figure(1);
-%  hold on;
-%   Trial1=plot ((1:n)*step,normtrial(1:n,1),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize',12, ...
-%     'MarkerEdgeColor','r', 'MarkerFaceColor','none');
-%   Trial61=plot ((1:n)*step,normtrial(1:n,61),'LineStyle', 'none','LineWidth', 1,'Marker', 's', 'MarkerSize',12, ...
-%     'MarkerEdgeColor', [1 0.5 0], 'MarkerFaceColor','none');
-%    Sb1=plot ((1:n)*step,normSb(1:n,1),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 8, ...
-%     'MarkerEdgeColor','none', 'MarkerFaceColor',[96 96 96]/255);
-%    Sb61=plot ((1:n)*step,normSb(1:n,61),'LineStyle', 'none','LineWidth', 1,'Marker', 's', 'MarkerSize',8, ...
-%     'MarkerEdgeColor','none', 'MarkerFaceColor','g');
-%   yield1=plot ((1:n)*step,yield(1:n)*s(1).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 8, ...
-%     'MarkerEdgeColor', 'none', 'MarkerFaceColor','b');
-%   yield61=plot ((1:n)*step,yield(1:n)*s(61).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 8, ...
-%     'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'c');
-% %---------------------plot settings-----------------------------
-% grid on;
-% grid minor;
-% set(gca ,'FontSize',25);
-% hXLabel = xlabel('t(s)' ,'Fontsize' ,25);
-% hTitle = title('Microscopic stress evolution at 2 scales' ,'Fontsize' ,25);
-% hYLabel = ylabel('Stress(Pa)', 'Fontsize' ,25);
-% hLegend=legend([yield1,Sb1,Trial1,yield61,Sb61,Trial61],'(\sigma_y-\lambda\Sigma_H)/s_1     at scale s_1','||S-b||              at scale s_1',...
-%     '||S-b||_{trial}         at scale s_1', '(\sigma_y-\lambda\Sigma_H)/s_61     at scale s_{61}','||S-b||              at scale s_{61}','||S-b||_{trial}         at scale s_{61}');
-% set([hLegend, gca], 'FontSize', 25)
-% % Adjust font
-% set(gca, 'FontName', 'Helvetica')
-% set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')
-% set([hXLabel, hYLabel], 'FontSize', 25)
-% set(hTitle, 'FontSize', 25, 'FontWeight' , 'bold')
-% % Adjust axes properties
-% set(gca, 'Box', 'off', 'TickDir', 'out', 'TickLength', [.02 .02], ...
-%     'XMinorTick', 'on', 'YMinorTick', 'on', 'YGrid', 'on', ...
-%     'XColor', [.3 .3 .3], 'YColor', [.3 .3 .3], ...
-%     'LineWidth', 1)
-% set(gcf,'color','w'); %set figure background transparent
-% set(gca,'color','w'); %set axis transparent
-% % Maximize print figure
-% set(gcf,'outerposition',get(0,'screensize'));
-% set(gcf, 'PaperPositionMode', 'manual');
-% set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
-% set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
-%
-% % saveas(gcf,'trialreal3d yield evolve with D.png');
+%---------------------Plot Trial and Sb evolution-----------------------------
+figure(1);
+ hold on;
+  Trial1=plot ((1:n)*step,normtrial(1:n,1),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize',12, ...
+    'MarkerEdgeColor','r', 'MarkerFaceColor','none');
+  Trial61=plot ((1:n)*step,normtrial(1:n,61),'LineStyle', 'none','LineWidth', 1,'Marker', 's', 'MarkerSize',12, ...
+    'MarkerEdgeColor', [1 0.5 0], 'MarkerFaceColor','none');
+   Sb1=plot ((1:n)*step,normSb(1:n,1),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 8, ...
+    'MarkerEdgeColor','none', 'MarkerFaceColor',[96 96 96]/255);
+   Sb61=plot ((1:n)*step,normSb(1:n,61),'LineStyle', 'none','LineWidth', 1,'Marker', 's', 'MarkerSize',8, ...
+    'MarkerEdgeColor','none', 'MarkerFaceColor','g');
+  yield1=plot ((1:n)*step,yield(1:n)*s(1).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 8, ...
+    'MarkerEdgeColor', 'none', 'MarkerFaceColor','b');
+  yield61=plot ((1:n)*step,yield(1:n)*s(61).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 8, ...
+    'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'c');
+%---------------------plot settings-----------------------------
+grid on;
+grid minor;
+set(gca ,'FontSize',25);
+hXLabel = xlabel('t(s)' ,'Fontsize' ,25);
+hTitle = title('Microscopic stress evolution at 2 scales' ,'Fontsize' ,25);
+hYLabel = ylabel('Stress(Pa)', 'Fontsize' ,25);
+hLegend=legend([yield1,Sb1,Trial1,yield61,Sb61,Trial61],'(\sigma_y-\lambda\Sigma_H)/s_1     at scale s_1','||S-b||              at scale s_1',...
+    '||S-b||_{trial}         at scale s_1', '(\sigma_y-\lambda\Sigma_H)/s_61     at scale s_{61}','||S-b||              at scale s_{61}','||S-b||_{trial}         at scale s_{61}');
+set([hLegend, gca], 'FontSize', 25)
+% Adjust font
+set(gca, 'FontName', 'Helvetica')
+set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')
+set([hXLabel, hYLabel], 'FontSize', 25)
+set(hTitle, 'FontSize', 25, 'FontWeight' , 'bold')
+% Adjust axes properties
+set(gca, 'Box', 'off', 'TickDir', 'out', 'TickLength', [.02 .02], ...
+    'XMinorTick', 'on', 'YMinorTick', 'on', 'YGrid', 'on', ...
+    'XColor', [.3 .3 .3], 'YColor', [.3 .3 .3], ...
+    'LineWidth', 1)
+set(gcf,'color','w'); %set figure background transparent
+set(gca,'color','w'); %set axis transparent
+% Maximize print figure
+set(gcf,'outerposition',get(0,'screensize'));
+set(gcf, 'PaperPositionMode', 'manual');
+set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
+set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
+
+% saveas(gcf,'trialreal3d yield evolve with D.png');
 %
 % %---------------------Plot Damage evolution-----------------------------
 % figure(2);
