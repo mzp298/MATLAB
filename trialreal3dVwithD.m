@@ -32,7 +32,7 @@ forcely=forcey;
 forcelz=forcez;
 
 %------------------------build the stress tensor---------------------
-A=6.45e-5;
+A=2.25e-4; %size of the gauge in square meter
 % A=1/6e4;
 cx=10;
 cy=60;
@@ -56,7 +56,7 @@ stress33=1/A*(cx*forcelx*sin(thetax)^2*sin(phix)^2+cy*forcely*sin(thetay)^2*sin(
 % mean(stress12) mean(stress22) mean(stress23);
 % mean(stress23) mean(stress13) mean(stress33);]
 
-[x]= [0.999305042	0.996340117	0.991013371	0.983336254	0.973326828	0.9610088	0.946411375	0.929569172	0.910522137...
+x= [0.999305042	0.996340117	0.991013371	0.983336254	0.973326828	0.9610088	0.946411375	0.929569172	0.910522137...
     0.889315446	0.865999398	0.840629296	0.813265315	0.783972359	0.752819907	0.71988185	0.685236313	0.648965471...
     0.611155355	0.571895646	0.531279464	0.489403146	0.446366017	0.402270158	0.357220158	0.311322872	0.264687162...
     0.217423644	0.16964442	0.121462819	0.072993122	0.024350293	-0.024350293	-0.072993122	-0.121462819	-0.16964442...
@@ -64,7 +64,7 @@ stress33=1/A*(cx*forcelx*sin(thetax)^2*sin(phix)^2+cy*forcely*sin(thetay)^2*sin(
     -0.571895646	-0.611155355	-0.648965471	-0.685236313	-0.71988185	-0.752819907	-0.783972359	-0.813265315...
     -0.840629296	-0.865999398	-0.889315446	-0.910522137	-0.929569172	-0.946411375	-0.9610088	-0.973326828...
     -0.983336254	-0.991013371	-0.996340117	-0.999305042];
-[weight]=[0.001783281	0.004147033	0.006504458	0.00884676	0.011168139	0.013463048	0.01572603	0.017951716	0.020134823...
+weight=[0.001783281	0.004147033	0.006504458	0.00884676	0.011168139	0.013463048	0.01572603	0.017951716	0.020134823...
     0.022270174	0.024352703	0.02637747	0.028339673	0.030234657	0.032057928	0.033805162	0.035472213	0.037055129	0.038550153...
     0.039953741	0.041262563	0.042473515	0.043583725	0.044590558	0.045491628	0.046284797	0.046968183	0.047540166	0.047999389...
     0.048344762	0.048575467	0.048690957	0.048690957	0.048575467	0.048344762	0.047999389	0.047540166	0.046968183	0.046284797...
@@ -87,7 +87,7 @@ sigu=8e8;             %ultimite stress
 gam=b+1;    %material parameter from Chaboche law(Wohler curve exponent)
 samplerate=256;   %recorded samples per second
 delta=(b+1)/(b-1); %yield stress degradation sensitivity with D
-n0=10;                   %number of initial local defects
+n0=3;                   %number of initial local defects
 %---------------------Vecterization-----------------------------
 
 WF=3e8;             %dissipated energy to failure per unit volume
@@ -132,7 +132,7 @@ Ws=(bsxfun(@minus,normtrial(1,1:length(x)),bsxfun(@rdivide, yield(1),s))<=0).*..
     (bsxfun(@minus,normtrial(1,1:length(x)),bsxfun(@rdivide, yield(1),s))>0).*...
     ((E-k)*(1+nu)/(2*E*(E+k*nu))*bsxfun(@times,weight,bsxfun(@rdivide,bsxfun(@times,bsxfun(@minus,normtrial(1,1:length(x)),bsxfun(@rdivide, yield(1),s)),yield(1)),s)));
 W= sum(Ws);
-alp=1-W*((1-Smax/yield(1))*sigu)^-1;
+alp=1-W*((1-Smax/y)*sigu)^-1;
 G = G+n0*(1-alp)*(gam+1)*W/WF; %1.322163316411401e-03
 D(1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
 
@@ -145,7 +145,7 @@ while G<1
     dev31=dev1(3,1); dev32=dev1(3,2); dev33=dev1(3,3);
     
     hydro=1/3*sum(stress11(n+1)+stress22(n+1)+stress33(n+1));
-    M=(1-3*hydro/sigu); %M function in Chaboche model
+    M=(1-hydro/sigu); %M function in Chaboche model
     M(M<0)=0;
     yield(n+1)=y*(1-D(n))^delta*M; %macro yield strength considering mean stress effect
     
@@ -176,8 +176,8 @@ while G<1
         (bsxfun(@minus,normtrial(n+1,:),bsxfun(@rdivide, yield(n+1),s))>0).*...
         ((E-k)*(1+nu)/(2*E*(E+k*nu))*bsxfun(@times,weight,bsxfun(@rdivide,bsxfun(@times,bsxfun(@minus,normtrial(n+1,:),bsxfun(@rdivide, yield(n+1),s)),yield(n+1)),s)));
     W= sum(Ws);
-    alp=1-W*((1-Smax/yield(n+1))*sigu)^-1;
-    G = G+n0*(1-alp)*(gam+1)*W/WF;
+    alp=1-W*((1-Smax/y)*sigu)^-1;
+    G = G+n0*(1-alp)*(gam+1)*W/WF
     D(n+1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
     t=n*step;
     %            hold on;
@@ -201,17 +201,10 @@ while G<1
     
     n=n+1;
 end
-% %---------------------Plot Damage evolution-----------------------------
-% figure(2);
-% DamageN=plot ((1:n)*step,D(1:n),'LineStyle', 'none','LineWidth', 2, 'Marker', 'o', 'MarkerSize', 10, ...
-%    'MarkerEdgeColor',  'r' , 'MarkerFaceColor' ,'none');
-
 toc;
 disp(['Number of test points is ' num2str(n/ari+1) ' points.']);
 disp(['Number of test time is ' num2str(t) ' seconds.']);
 testtime=num2str(t);
-% sp=actxserver('SAPI.SpVoice');
-% sp.Speak('I finished all the work finally. oh la la');
 
 %---------------------Plot Trial and Sb evolution-----------------------------
 figure(1);
@@ -259,36 +252,37 @@ set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,botto
 % saveas(gcf,'trialreal3d yield evolve with D.png');
 %
 % %---------------------Plot Damage evolution-----------------------------
-% figure(2);
-% DamageN=plot ((1:n)*step,D(1:n),'LineStyle', 'none','LineWidth', 2, 'Marker', 'o', 'MarkerSize', 10, ...
-%    'MarkerEdgeColor',  'r' , 'MarkerFaceColor' ,'none');
-% %---------------------plot settings-----------------------------
-% grid on;
-% grid minor;
-% set(gca ,'FontSize',25);
-% hXLabel = xlabel('t(s)' ,'Fontsize' ,25);
-%  hTitle =title('Damage evolution under multidimensional stress' ,'Fontsize' ,25);
-%  hYLabel =ylabel('D', 'Fontsize' ,25);
-%  % Adjust font
-% set(gca, 'FontName', 'Helvetica')
-% set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')
-% set([hXLabel, hYLabel], 'FontSize', 25)
-% set(hTitle, 'FontSize', 25, 'FontWeight' , 'bold')
-% % Adjust axes properties
-% set(gca, 'Box', 'off', 'TickDir', 'out', 'TickLength', [.02 .02], ...
-%     'XMinorTick', 'on', 'YMinorTick', 'on', 'YGrid', 'on', ...
-%     'XColor', [.3 .3 .3], 'YColor', [.3 .3 .3], ...
-%     'LineWidth', 1)
-% set(gcf,'color','w'); %set figure background transparent
-% set(gca,'color','w'); %set axis transparent
-% % Maximize print figure
-% set(gcf,'outerposition',get(0,'screensize'));
-% set(gcf, 'PaperPositionMode', 'manual');
-% set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
-% set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
-% % saveas(gcf,'damage3d yield evolve with D.png');
+figure(2);
+DamageN=plot ((1:n)*step,D(1:n),'LineStyle', 'none','LineWidth', 2, 'Marker', 'o', 'MarkerSize', 10, ...
+   'MarkerEdgeColor',  'r' , 'MarkerFaceColor' ,'none');
+% % ---------------------plot settings-----------------------------
+grid on;
+grid minor;
+set(gca ,'FontSize',25);
+hXLabel = xlabel('t(s)' ,'Fontsize' ,25);
+ hTitle =title('Damage evolution under multidimensional stress' ,'Fontsize' ,25);
+ hYLabel =ylabel('D', 'Fontsize' ,25);
+ % Adjust font
+set(gca, 'FontName', 'Helvetica')
+set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')
+set([hXLabel, hYLabel], 'FontSize', 25)
+set(hTitle, 'FontSize', 25, 'FontWeight' , 'bold')
+% Adjust axes properties
+set(gca, 'Box', 'off', 'TickDir', 'out', 'TickLength', [.02 .02], ...
+    'XMinorTick', 'on', 'YMinorTick', 'on', 'YGrid', 'on', ...
+    'XColor', [.3 .3 .3], 'YColor', [.3 .3 .3], ...
+    'LineWidth', 1)
+set(gcf,'color','w'); %set figure background transparent
+set(gca,'color','w'); %set axis transparent
+% Maximize print figure
+set(gcf,'outerposition',get(0,'screensize'));
+set(gcf, 'PaperPositionMode', 'manual');
+set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
+set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
+% saveas(gcf,'damage3d yield evolve with D.png');
 
-
+% sp=actxserver('SAPI.SpVoice');
+% sp.Speak('I finished all the work finally. oh la la');
 %  mail2me('job finished',['Elapsed time is ' num2str(toc) ' seconds. Real test time is ' testtime ' seconds. Number of test points is ' num2str(n/ari+1) ' points.']);
 %
 profile off

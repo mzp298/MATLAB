@@ -122,6 +122,7 @@ Ws=(bsxfun(@minus,normtrial,bsxfun(@rdivide, yield,s))<=0).*...
 W= sum(Ws);
 G = G+n0*(1-alp)*(gam + 1)*W/WF;
 D(1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
+%% 
 
 tic;
 while n<300
@@ -166,6 +167,7 @@ normSb=sqrt(sum(Sbtensor.^2)); %sum(a) sums all the colume
     G = G+n0*(1-alp)*(gam + 1)*W/WF;
     D(n+1)=1-(1-G.^(1/(1-alp))).^(1/(gam + 1));
     
+    figure(2);
         hold on;
         yield1=plot (n+1,yield*s(33).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 8, ...
             'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'c');
@@ -194,88 +196,8 @@ Nf=n*stepnumber^-1;
 disp(['Cycles to failure is ' num2str(Nf) ' cycles.']);
 % t=n/stepnumber*1/f;
 % disp(['Time to failure is ' num2str(t) ' s.']);
-hold on;
-DamageN=plot ((1:n),D(1:n),'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 6, ...
-    'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'm');
-
-% % % %---------------------3 methods damage evolution plot settings-----------------------------
-% grid on;
-% grid minor;
-% hTitle = title('Damage evolution comparison of three methods' ,'Fontsize' ,35);
-% hXLabel = xlabel('Number of steps' ,'Fontsize' ,35);
-% hYLabel = ylabel('Damage', 'Fontsize' ,35);
-%  hLegend=legend([DamageN,DamageCha,Damagecyc],'Numerical method','Chaboche method',...
-%    'Cyclic load calculation');
-% set([hLegend, gca], 'FontSize', 25)
-% set(hLegend,'Box','on');
-% set(hLegend,'EdgeColor',[1 1 1]); %set the edge colour of the legend to white 
-% 
-% % Adjust font
-% set(gca, 'FontName', 'Helvetica')
-% set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')
-% % Adjust axes properties
-% set(gca, 'Box', 'off', 'TickDir', 'out', 'TickLength', [.02 .02], ...
-%     'XMinorTick', 'on', 'YMinorTick', 'on', 'YGrid', 'on', ...
-%     'XColor', [.3 .3 .3], 'YColor', [.3 .3 .3], ...
-%     'LineWidth', 1)
-% set(gcf,'color','w'); %set figure background transparent
-% set(gca,'color','w'); %set axis transparent
-% % Maximize print figure
-% set(gcf,'outerposition',get(0,'screensize'));
-% set(gcf, 'PaperPositionMode', 'manual');
-% set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
-% set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
-% % saveas(gcf,'F:\Git\Anew\figures\damagesin.png');
-
-
-% % %---------------------Difference between cyclic load calculation and numerical method as function of time-----------------------------
-% figure(2);
-%      hold on
-%      Damagediff=plot ((Dcyc(1:n-600)-D(1:n-600)).*Dcyc(1:n-600).^-1,'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 6, ...
-%        'MarkerEdgeColor',  'k', 'MarkerFaceColor' , 'k');
-% grid on;
-% grid minor;
-% set(gca ,'FontSize',25);
-% hTitle = title('Relative difference between cyclic load calculation and numerical method' ,'Fontsize' ,35);
-% hXLabel = xlabel('Number of steps' ,'Fontsize' ,30);
-% hYLabel = ylabel('Relative difference', 'Fontsize' ,30);
-% % Adjust font
-% set(gca, 'FontName', 'Helvetica')
-% set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')
-% % Adjust axes properties
-% set(gca, 'Box', 'off', 'TickDir', 'out', 'TickLength', [.02 .02], ...
-%     'XMinorTick', 'on', 'YMinorTick', 'on', 'YGrid', 'on', ...
-%     'XColor', [.3 .3 .3], 'YColor', [.3 .3 .3], ...
-%     'LineWidth', 1)
-% set(gcf,'color','w'); %set figure background transparent
-% set(gca,'color','w'); %set axis transparent
-% % Maximize print figure
-% set(gcf,'outerposition',get(0,'screensize'));
-% set(gcf, 'PaperPositionMode', 'manual');
-% set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
-% set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
-% %  saveas(gcf,'F:\Git\Anew\figures\Damagediff.png');
-
-
-
-
-
-% %---------------------out loop Plot Trial and Sb evolution-----------------------------
-% figure(1);
-%  hold on;
-%   Trial1=plot ((1:n),normtrial(1:n,1),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize',12, ...
-%     'MarkerEdgeColor','r', 'MarkerFaceColor','none');
-%   Trial61=plot ((1:n),normtrial(1:n,61),'LineStyle', 'none','LineWidth', 1,'Marker', 's', 'MarkerSize',12, ...
-%     'MarkerEdgeColor', [1 0.5 0], 'MarkerFaceColor','none');
-%    Sb1=plot ((1:n),normSb(1:n,1),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 8, ...
-%     'MarkerEdgeColor','none', 'MarkerFaceColor',[96 96 96]/255);
-%    Sb61=plot ((1:n),normSb(1:n,61),'LineStyle', 'none','LineWidth', 1,'Marker', 's', 'MarkerSize',8, ...
-%     'MarkerEdgeColor','none', 'MarkerFaceColor','g');
-%   yield1=plot ((1:n),yield(1:n)*s(1).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 8, ...
-%     'MarkerEdgeColor', 'none', 'MarkerFaceColor','b');
-%   yield61=plot ((1:n),yield(1:n)*s(61).^-1, 'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 8, ...
-%     'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'c');
 % %---------------------in loop 2 scales plot settings-----------------------------
+figure(2);
 grid on;
 grid minor;
 set(gca ,'FontSize',30);
@@ -305,6 +227,71 @@ set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 % saveas(gcf,'F:\Git\Anew\figures\trialsin.png');
+
+% %---------------------Plot 3 methods damage evo-----------------------------
+figure(1);
+hold on;
+DamageN=plot ((1:n),D(1:n),'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 6, ...
+    'MarkerEdgeColor',  'none', 'MarkerFaceColor' , 'm');
+% % %---------------------3 methods damage evolution plot settings-----------------------------
+grid on;
+grid minor;
+hTitle = title('Damage evolution comparison of three methods' ,'Fontsize' ,35);
+hXLabel = xlabel('Number of steps' ,'Fontsize' ,35);
+hYLabel = ylabel('Damage', 'Fontsize' ,35);
+ hLegend=legend([DamageN,DamageCha,Damagecyc],'Numerical method','Chaboche method',...
+   'Cyclic load calculation');
+set([hLegend, gca], 'FontSize', 25)
+set(hLegend,'Box','on');
+set(hLegend,'EdgeColor',[1 1 1]); %set the edge colour of the legend to white 
+
+% Adjust font
+set(gca, 'FontName', 'Helvetica')
+set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')
+% Adjust axes properties
+set(gca, 'Box', 'off', 'TickDir', 'out', 'TickLength', [.02 .02], ...
+    'XMinorTick', 'on', 'YMinorTick', 'on', 'YGrid', 'on', ...
+    'XColor', [.3 .3 .3], 'YColor', [.3 .3 .3], ...
+    'LineWidth', 1)
+set(gcf,'color','w'); %set figure background transparent
+set(gca,'color','w'); %set axis transparent
+% Maximize print figure
+set(gcf,'outerposition',get(0,'screensize'));
+set(gcf, 'PaperPositionMode', 'manual');
+set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
+set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
+% saveas(gcf,'F:\Git\Anew\figures\damagesin.png');
+
+
+ 
+% % %---------------------Difference between cyclic load calculation and numerical method as function of time-----------------------------
+% figure(3);
+%      hold on
+%      Damagediff=plot ((Dcyc(1:n-600)-D(1:n-600)).*Dcyc(1:n-600).^-1,'LineStyle', 'none','LineWidth', 1, 'Marker', 'o', 'MarkerSize', 6, ...
+%        'MarkerEdgeColor',  'k', 'MarkerFaceColor' , 'k');
+% grid on;
+% grid minor;
+% set(gca ,'FontSize',25);
+% hTitle = title('Relative difference between cyclic load calculation and numerical method' ,'Fontsize' ,35);
+% hXLabel = xlabel('Number of steps' ,'Fontsize' ,30);
+% hYLabel = ylabel('Relative difference', 'Fontsize' ,30);
+% % Adjust font
+% set(gca, 'FontName', 'Helvetica')
+% set([hTitle, hXLabel, hYLabel], 'FontName', 'AvantGarde')
+% % Adjust axes properties
+% set(gca, 'Box', 'off', 'TickDir', 'out', 'TickLength', [.02 .02], ...
+%     'XMinorTick', 'on', 'YMinorTick', 'on', 'YGrid', 'on', ...
+%     'XColor', [.3 .3 .3], 'YColor', [.3 .3 .3], ...
+%     'LineWidth', 1)
+% set(gcf,'color','w'); %set figure background transparent
+% set(gca,'color','w'); %set axis transparent
+% % Maximize print figure
+% set(gcf,'outerposition',get(0,'screensize'));
+% set(gcf, 'PaperPositionMode', 'manual');
+% set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
+% set(gcf, 'PaperPosition', [0 0 1920 1080]); %set(gcf,'PaperPosition',[left,bottom,width,height])
+% %  saveas(gcf,'F:\Git\Anew\figures\Damagediff.png');
+
 
 
 %sp=actxserver('SAPI.SpVoice');
