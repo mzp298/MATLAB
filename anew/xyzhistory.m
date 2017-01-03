@@ -1,3 +1,6 @@
+clear;clc;
+
+figure(2)
 load('FX_RAVG.mat')
 x=plot(signal.data,'b')
 hold on

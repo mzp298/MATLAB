@@ -7,9 +7,12 @@ ap=3*(tt/ff-1/2);
 bp=tt;
 ad=3*(tt/ff-1/2);
 bd=tt;
-lg=0.3297;
-lgp=0.3297 ;
-lgd=0.3297 ;
+lg=0.2334 ;
+lgp=0.2334 ;
+lgd=0.2334 ;
+% lg=0.3297 ;
+% lgp=0.3297 ;
+% lgd=0.3297 ;
 y=1:0.01:30;
 
 sigmax  =b*(1/sqrt(3)+a/3-lg*((sqrt(3)*y).^-1+a/3*y.^-1)).^-1;
@@ -21,12 +24,12 @@ hold on;
 fr=plot(y,sigmax, '-b','LineWidth',2,'Marker', 'o', 'MarkerSize', 12,'MarkerEdgeColor',  'b', 'MarkerFaceColor' , 'none');
 frp=plot(y,sigmaxp,'-.r','LineWidth',2,'Marker', '^', 'MarkerSize', 8,'MarkerEdgeColor',  'r', 'MarkerFaceColor' , 'none');
 frd=plot(y,sigmaxd, ':g','LineWidth',2,'Marker', 'v', 'MarkerSize', 4,'MarkerEdgeColor',  'g', 'MarkerFaceColor' , 'none');
-plot(1,280,'d','MarkerSize',20, 'MarkerFaceColor','k');
-plot(2,260,'d','MarkerSize',20, 'MarkerFaceColor','k');
-plot(4,252,'d','MarkerSize',20, 'MarkerFaceColor','k');
-plot(8,242,'d','MarkerSize',20, 'MarkerFaceColor','k');
+plot(1,281,'d','MarkerSize',20, 'MarkerFaceColor','k');
+plot(2,264,'d','MarkerSize',20, 'MarkerFaceColor','k');
+plot(4,252.6,'d','MarkerSize',20, 'MarkerFaceColor','k');
+plot(8,242.5,'d','MarkerSize',20, 'MarkerFaceColor','k');
 plot(16,223,'d','MarkerSize',20, 'MarkerFaceColor','k');
-plot(26,225,'d','MarkerSize',20, 'MarkerFaceColor','k');
+plot(28,225,'d','MarkerSize',20, 'MarkerFaceColor','k');
 class=plot([2 30],[ff ff],'k','LineWidth',5);
 hold off;
 grid on;
@@ -59,12 +62,11 @@ set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | point
 set(gcf, 'PaperPosition', [0 0 800 600]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 saveas(gcf,'carbonsteel.png');
 
-% %*****************Fitting********************
-% clear;clc;
-% R=[1 2 4 8 16 26];
-% f=[280 260 252 242 223 225];
-% 
+%*****************Fitting********************
+R=[1 2 4 8 16 28];
+f=[281 264 252.6 242.5 223 225];
+createFitcarbon(R, f)
 % cftool
 % t/(1/sqrt(3)+(t-222/sqrt(3))/222-lg*(1/(sqrt(3)*x)+(t-222/sqrt(3))/(222*x)))
 % lg=0.001~0.5
-% t=150~200
+% t=100~160

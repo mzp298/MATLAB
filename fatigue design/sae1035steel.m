@@ -58,10 +58,10 @@ set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | point
 set(gcf, 'PaperPosition', [0 0 800 600]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 saveas(gcf,'1035steel.png');
 
-% %*****************Fitting********************
-% clear;clc;
-% R=[2 3 6.3 12.7 24];
-% f=[269 268 241 237 234];
+%*****************Fitting********************
+R=[2 3 6.3 12.7 24];
+f=[269 268 241 237 234];
+createFit1035(R, f)
 % cftool
 % t/(1/sqrt(3)+(t-234/sqrt(3))/234-lg*(1/(sqrt(3)*x)+(t-234/sqrt(3))/(234*x)))
 % lg=0.001~0.5

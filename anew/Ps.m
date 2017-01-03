@@ -1,5 +1,6 @@
 clear;
-clc
+clc;
+close all;
 
 s=1:0.001:30;
 beta=1.5;

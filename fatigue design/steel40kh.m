@@ -7,9 +7,9 @@ ap=3*(tt/ff-1/2);
 bp=tt;
 ad=3*(tt/ff-1/2);
 bd=tt;
-lg=0.1424;
-lgp=0.1424;
-lgd=0.1424;
+lg=0.143;
+lgp=0.143;
+lgd=0.143;
 y=1:0.01:30;
 
 sigmax  =b*(1/sqrt(3)+a/3-lg*((sqrt(3)*y).^-1+a/3*y.^-1)).^-1;
@@ -58,11 +58,11 @@ set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | point
 set(gcf, 'PaperPosition', [0 0 800 600]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 saveas(gcf,'40khsteel.png');
 
-% %*****************Fitting********************
-% clear;clc;
-% R=[2 3 6.3 12.7 24];
-% f=[269 268 241 237 234];
+%*****************Fitting********************
+R=[2 2.5 5 10 20];
+f=[319 314 309 304.7 297.5];
+createFit40kh(R,f)
 % cftool
-% t/(1/sqrt(3)+(t-234/sqrt(3))/234-lg*(1/(sqrt(3)*x)+(t-234/sqrt(3))/(234*x)))
+% t/(1/sqrt(3)+(t-297/sqrt(3))/297-lg*(1/(sqrt(3)*x)+(t-297/sqrt(3))/(297*x)))
 % lg=0.001~0.5
 % t=150~200

@@ -21,7 +21,7 @@ hold on;
 fr=plot(y,sigmax, '-b','LineWidth',2,'Marker', 'o', 'MarkerSize', 12,'MarkerEdgeColor',  'b', 'MarkerFaceColor' , 'none');
 frp=plot(y,sigmaxp,'-.r','LineWidth',2,'Marker', '^', 'MarkerSize', 8,'MarkerEdgeColor',  'r', 'MarkerFaceColor' , 'none');
 frd=plot(y,sigmaxd, ':g','LineWidth',2,'Marker', 'v', 'MarkerSize', 4,'MarkerEdgeColor',  'g', 'MarkerFaceColor' , 'none');
-plot(2,235,'d','MarkerSize',20, 'MarkerFaceColor','k');
+plot(2,234,'d','MarkerSize',20, 'MarkerFaceColor','k');
 plot(3,221,'d','MarkerSize',20, 'MarkerFaceColor','k');
 plot(6.5,198,'d','MarkerSize',20, 'MarkerFaceColor','k');
 plot(12.7,194,'d','MarkerSize',20, 'MarkerFaceColor','k');
@@ -58,14 +58,12 @@ set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | point
 set(gcf, 'PaperPosition', [0 0 800 600]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 saveas(gcf,'1220steel.png');
 
-% %*****************Fitting********************
-% clear;clc;
-% R=[2 3 6.5 12.7 24];
-% f=[235 221 198 194 194];
+%*****************Fitting********************
+R=[2 3 6.5 12.7 24];
+f=[235 221 198 194 194];
+createFit1220(R,f)
 % cftool
-% 
 % y=f(x)
 % t/(1/sqrt(3)+(t-191/sqrt(3))/191-lg*(1/(sqrt(3)*x)+(t-191/sqrt(3))/(191*x)))
-% 143.1/(1/2+(143.1-191/2)/191-lg*(1/(2*x)+(143.1-191/2)/(191*x)))
 % lg=0.001~0.5
 % t=100~150
