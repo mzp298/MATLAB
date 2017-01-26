@@ -2,12 +2,13 @@ clear;clc;
 close all
 format long e
 
-fid = fopen('F:\Git\Cetim\ep_a_04\Acqui_CV_2.txt');
+fid = fopen('F:\Git\Cetim\ep_a_13\Acqui_CV.txt');
+% fid = fopen('/home/ma/MATLAB/Cetim/ep_a_13/Acqui_CV.txt');
 [force]=textscan(fid,'%*s%*s%s%*s%*s','headerlines',5);
-area=2.27*9.95*1e-6; %meter square
+area=2.28*9.99*1e-6; %meter square
 stress11=1000*str2double(strrep(force{1,1},',','.')).*area^-1; %Pa
-repetition=xlsread('F:\Git\MATLAB\anew\tuning.xlsx',1,'G6');
-nbrep=xlsread('F:\Git\MATLAB\anew\tuning.xlsx',1,'F6');
+repetition=xlsread('F:\Git\MATLAB\anew\tuning.xlsx',1,'G15');
+nbrep=xlsread('F:\Git\MATLAB\anew\tuning.xlsx',1,'F15');
 copy=nbrep+300;
 stress11=repmat(stress11(1:repetition),copy,1);
 clear force;
@@ -135,14 +136,14 @@ toc;
 disp(['Number of test points is ' num2str(n) ' points.']);
 
 % 
-% % %---------------------Plot stress-----------------------------
+% %---------------------Plot stress-----------------------------
 % figure(1);
 % stress=plot(1:10000,stress11(1:10000),'LineWidth', 2);
 % grid on;
 % grid minor;
 % set(gca ,'FontSize',25);
 % hXLabel = xlabel('t(s)' ,'Fontsize' ,25);
-% hTitle =title('Stress evlolution of EP\_04\_2 random load' ,'Fontsize' ,25);
+% hTitle =title('Stress evlolution of EP\_13 random load' ,'Fontsize' ,25);
 % hYLabel =ylabel('Stress', 'Fontsize' ,25);
 % % Adjust font
 % set(gca, 'FontName', 'Helvetica')
@@ -161,8 +162,8 @@ disp(['Number of test points is ' num2str(n) ' points.']);
 % set(gcf, 'PaperPositionMode', 'manual');
 % set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 % set(gcf, 'PaperPosition', [0 0 1080 608]); %set(gcf,'PaperPosition',[left,bottom,width,height])
-% saveas(gcf,'F:\Git\Anew\figures\ep_04_2_stress.png');
-% 
+% saveas(gcf,'F:\Git\Anew\figures\ep_13_stress.png');
+
 % % %---------------------Plot Damage evolution-----------------------------
 % clear stress11;
 % figure(2);
@@ -173,7 +174,7 @@ disp(['Number of test points is ' num2str(n) ' points.']);
 % grid minor;
 % set(gca ,'FontSize',25);
 % hXLabel = xlabel('t(s)' ,'Fontsize' ,25);
-% hTitle =title('Damage evolution of EP\_04\_2 random load' ,'Fontsize' ,25);
+% hTitle =title('Damage evolution of EP\_13 random load' ,'Fontsize' ,25);
 % hYLabel =ylabel('D', 'Fontsize' ,25);
 % % Adjust font
 % set(gca, 'FontName', 'Helvetica')
@@ -192,7 +193,9 @@ disp(['Number of test points is ' num2str(n) ' points.']);
 % set(gcf, 'PaperPositionMode', 'manual');
 % set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 % set(gcf, 'PaperPosition', [0 0 1080 608]); %set(gcf,'PaperPosition',[left,bottom,width,height])
-% saveas(gcf,'F:\Git\Anew\figures\ep_04_2_damage.png');
-
-xlswrite('F:\Git\MATLAB\anew\tuning.xlsx',a,1,'C6');
-xlswrite('F:\Git\MATLAB\anew\tuning.xlsx',n,1,'D6');
+% saveas(gcf,'F:\Git\Anew\figures\ep_13_damage.png');
+% 
+xlswrite('F:\Git\MATLAB\anew\tuning.xlsx',a,1,'C15');
+xlswrite('F:\Git\MATLAB\anew\tuning.xlsx',n,1,'D15');
+% xlswrite('/home/ma/MATLAB/tuning.xlsx',n0,1,'C15');
+% xlswrite('/home/ma/MATLAB/tuning.xlsx',n0,1,'D15');

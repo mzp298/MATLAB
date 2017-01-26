@@ -12,7 +12,7 @@ forcey= transpose(signal.data);
 load('FZ_RAVG.mat');
 signal.data=double(signal.data);
 forcez= transpose(signal.data);
-copy=3;
+copy=1.2;
 forcex=repmat(forcex,copy,1);
 forcey=repmat(forcey,copy,1);
 forcez=repmat(forcez,copy,1);
