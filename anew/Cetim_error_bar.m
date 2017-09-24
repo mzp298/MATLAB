@@ -4,54 +4,52 @@ y0=x;
 py0=loglog(x,y0,'k','LineWidth',3);
 hold on;
 
-cyclic_exp=[9.98000E+04
-4.14000E+05];
-experiments_a=[
-2.59000E+06
-4.22000E+06
-3.90000E+06
-2.44000E+06
-5.23000E+06
-5.32000E+06
-1.39000E+07
-1.04000E+07
-1.14000E+07
-1.10000E+07
+cyclic_exp=[99892
+414298];
+experiments_a=[2500000
+4105263
+3815789
+2368421
+5105263
+5184211
+13552632
+10131579
+11157895
+10763158];
+experiments_b=[3184211
+10684211
+11947368
+13631579
+14552632
+16105263
+6657895
+5157895
+4684211
+3236842];
+cyclic_num=[1.42499E+05
+4.90448E+05
 ];
-experiments_b=[3.18421E+06
-1.06842E+07
-1.19474E+07
-1.36316E+07
-1.45526E+07
-1.61053E+07
-6.65789E+06
-5.15789E+06
-4.68421E+06
-3.23684E+06
+numeric_a=[3.48329E+06
+6.16976E+06
+4.48783E+06
+3.99816E+06
+4.96007E+06
+6.33447E+06
+8.38421E+06
+7.11392E+06
+7.20350E+06
+8.09421E+06
 ];
-cyclic_num=[1.38669E+05
-4.49239E+05];
-numeric_a=[3.66537E+06
-4.21958E+06
-4.19406E+06
-4.26048E+06
-4.16465E+06
-4.08682E+06
-9.98437E+06
-9.94240E+06
-9.89178E+06
-9.90880E+06
-];
-numeric_b=[4.26387E+06
-1.01641E+07
-1.01612E+07
-9.47240E+06
-1.01124E+07
-1.01952E+07
-4.39785E+06
-4.48959E+06
-4.38370E+06
-4.40717E+06
+numeric_b=[4.90717E+06
+7.72917E+06
+8.69919E+06
+8.23941E+06
+7.02594E+06
+6.89510E+06
+5.54561E+06
+5.90673E+06
+4.54425E+06
+4.06431E+06
 ];
 err_cyc = loglog(cyclic_exp,cyclic_num,'o','MarkerSize',12,'LineWidth', 3,'MarkerEdgeColor',[208 32 144]/255, 'MarkerFaceColor','none');
 err_a = loglog(experiments_a,numeric_a,'^','MarkerSize',12,'LineWidth', 3,'MarkerEdgeColor',[238 118 0]/255, 'MarkerFaceColor','none');
@@ -90,6 +88,6 @@ set(gcf,'outerposition',get(0,'screensize'));
 set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 1200 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
-saveas(gcf,'F:\Git\Anew\figures\Cetim_err.png');
+% saveas(gcf,'F:\Git\Anew\figures\Cetim_err.png');
 sp=actxserver('SAPI.SpVoice');
 sp.Speak('done done done');

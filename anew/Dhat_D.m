@@ -3,20 +3,20 @@ D=0:0.01:1;
 gam=2;
 Dhat=1-(1-D).^(gam+1);
 figure(1);
-Dhat=plot(D,Dhat,'-k','LineWidth',4);
+Dhat=plot(Dhat,D,'-k','LineWidth',4);
 axis equal;
 axis([0 1 0 1]);
 grid on;
 
-hXLabel = xlabel('D');
-hYLabel =ylabel({'$\hat{D}$'},'Interpreter','latex');
+hXLabel = xlabel({'$\tilde{D}$'},'Interpreter','latex');
+hYLabel =ylabel('D','Interpreter','latex');
 set(gca,'XTick',0:0.1:1);
 set(gca,'YTick',0:0.1:1);
 
 % Adjust font
-set(gca, 'FontName', 'Helvetica')
+set(gca, 'FontName', 'Helvetica', 'FontSize',35)
 set([ hXLabel, hYLabel], 'FontName', 'AvantGarde')
-set([hXLabel, hYLabel, gca], 'FontSize',30)
+set([hXLabel, hYLabel, gca], 'FontSize',35)
 
 % Adjust axes properties
 set(gcf,'color','w'); %set figure background transparent

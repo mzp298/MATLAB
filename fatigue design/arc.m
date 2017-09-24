@@ -67,5 +67,6 @@ set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 1080 565]); %set(gcf,'PaperPosition',[left,bottom,width,height])
  saveas(gcf,'4340.png');
+  saveas(gcf,'4340.fig');
 
 

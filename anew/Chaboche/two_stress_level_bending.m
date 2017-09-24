@@ -84,7 +84,7 @@ hXLabel = xlabel('N_{1}/N_{F1}' ,'Fontsize' ,30);
 hYLabel = ylabel('N_{2}/N_{F2}', 'Fontsize' ,30);
 hTitle = title('Two-stress level loading in 4-point bending at edge of bar' ,'Fontsize' ,30);
 set(hTitle, 'FontSize', 30, 'FontWeight' , 'bold')
-hLegend=legend([PAs2,PAc2,PAd2],'Sines criteria','Crossland criteria','Dangvan criteria',...
+hLegend=legend([PAs2,PAc2,PAd2],'Sines criterion','Crossland criterion','Dangvan criterion',...
     'Location','bestoutside');
 set(hLegend, 'FontSize', 20)
 set(hLegend,'Box','on');
@@ -106,7 +106,7 @@ set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | point
 set(gcf, 'PaperPosition', [0 0 1280 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 
 
-saveas(gcf,'F:\Git\PhDreport\5thesis\figures\2stressB.png');
+saveas(gcf,'F:\Git\Doctor_thesis_Zepeng\figures\2stressB.png');
 
 sp=actxserver('SAPI.SpVoice');
 sp.Speak('Job done');

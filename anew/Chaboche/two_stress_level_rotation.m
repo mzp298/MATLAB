@@ -107,7 +107,7 @@ set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | point
 set(gcf, 'PaperPosition', [0 0 1280 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 
 
-saveas(gcf,'F:\Git\PhDreport\5thesis\figures\2stressR.png');
+saveas(gcf,'F:\Git\Doctor_thesis_Zepeng\figures\2stressR.png');
 
 sp=actxserver('SAPI.SpVoice');
 sp.Speak('done job');

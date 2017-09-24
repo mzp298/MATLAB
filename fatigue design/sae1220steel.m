@@ -57,6 +57,7 @@ set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 800 600]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 saveas(gcf,'1220steel.png');
+saveas(gcf,'1220steel.fig');
 
 %*****************Fitting********************
 R=[2 3 6.5 12.7 24];

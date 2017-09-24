@@ -1,7 +1,7 @@
-clear;
-clc
+clc;
+close all;
 
-s=1:0.001:30;
+s=1:0.001:20;
 beta=5;
 c=beta-1;
 p=c*s.^-beta;
@@ -9,14 +9,14 @@ cum=1-s.^(1-beta);
 hold on
 %loglog(s,p,'r')
 plot(s,p,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 1, ...
-      'MarkerEdgeColor','none', 'MarkerFaceColor',[238 180 34]/255);
+      'MarkerEdgeColor','none', 'MarkerFaceColor',[138 43 226]/255);
 h=area(s,p,'LineStyle', 'none','LineWidth', 1);
-set(h,'FaceColor',[238 180 34]/255);
+set(h,'FaceColor',[138 43 226]/255);
 set(gca,'FontSize',25);
 set(gca,'xtick',1:5:30,'xticklabel',1:5:30) 
 %xtick shows the ticks, xticklabel gives the tick names.
-set(gca,'xlim',[0 30]);
-set(gca,'ylim',[0 4]);
+set(gca,'xlim',[0 max(s)]);
+set(gca,'ylim',[0 max(p)]);
 grid on;
 %grid minor;
 hXLabel = xlabel('Scale s','Fontsize',35);

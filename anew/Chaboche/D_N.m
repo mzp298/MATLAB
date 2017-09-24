@@ -32,4 +32,4 @@ set(gcf,'outerposition',get(0,'screensize'));
 set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 1200 1000]); %set(gcf,'PaperPosition',[left,bottom,width,height])
-%  saveas(gcf,'F:\Git\PhDreport\5thesis\figures\D-N.png');
+saveas(gcf,'F:\Git\Doctor_thesis_Zepeng\figures\D-N.png');

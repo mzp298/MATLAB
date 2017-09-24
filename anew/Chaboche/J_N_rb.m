@@ -76,7 +76,7 @@ hXLabel = xlabel('N_F' ,'Fontsize' ,30);
 hYLabel = ylabel('A_{||}', 'Fontsize' ,30);
 hTitle = title('A_{||}-N curve in ROTATIVE BENDING using Chaboche model with different criteria' ,'Fontsize' ,30);
 set(hTitle, 'FontSize', 30, 'FontWeight' , 'bold')
-hLegend=legend('Sines criteria','Crossland criteria','Dangvan criteria',...
+hLegend=legend('Sines criterion','Crossland criterion','Dangvan criterion',...
     'Location','best');
 set(hLegend, 'FontSize', 20)
 set(hLegend,'Box','on');
@@ -98,7 +98,7 @@ set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | point
 set(gcf, 'PaperPosition', [0 0 1280 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 
 
-saveas(gcf,'F:\Git\PhDreport\5thesis\figures\JNRB.png');
+saveas(gcf,'F:\Git\Doctor_thesis_Zepeng\figures\NRB.png');
 
 sp=actxserver('SAPI.SpVoice');
 sp.Speak('Dont forget it');

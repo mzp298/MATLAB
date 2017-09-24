@@ -1,8 +1,9 @@
 clear;
-clc
+clc;
+close all;
 
-s=1:0.001:30;
-beta=1.5;
+s=1:0.001:20;
+beta=1.1;
 c=beta-1;
 p=c*s.^-beta;
 cum=1-s.^(1-beta);
@@ -15,8 +16,8 @@ set(h,'FaceColor',[238 121 66]/255);
 set(gca,'FontSize',25);
 set(gca,'xtick',1:5:30,'xticklabel',1:5:30) 
 %xtick shows the ticks, xticklabel gives the tick names.
-set(gca,'xlim',[0 30]);
-set(gca,'ylim',[0 0.6]);
+set(gca,'xlim',[0 max(s)]);
+set(gca,'ylim',[0 max(p)]);
 grid on;
 %grid minor;
 hXLabel = xlabel('Scale s','Fontsize',35);
@@ -36,5 +37,4 @@ set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 1920 1080]); 
 
-% saveas(gcf,'F:\Git\PhDreport\4Anew\figures\ps1.png');
 saveas(gcf,'F:\Git\Anew\figures\ps1.png');

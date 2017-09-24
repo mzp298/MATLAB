@@ -61,6 +61,7 @@ set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 800 600]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 saveas(gcf,'carbonsteel.png');
+saveas(gcf,'carbonsteel.fig');
 
 %*****************Fitting********************
 R=[1 2 4 8 16 28];

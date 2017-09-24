@@ -5,23 +5,7 @@ clear;clc;close all;
 dbstop if error
 format long e
 
-[x]= [0.999305042	0.996340117	0.991013371	0.983336254	0.973326828	0.9610088	0.946411375	0.929569172	0.910522137...
-    0.889315446	0.865999398	0.840629296	0.813265315	0.783972359	0.752819907	0.71988185	0.685236313	0.648965471...
-    0.611155355	0.571895646	0.531279464	0.489403146	0.446366017	0.402270158	0.357220158	0.311322872	0.264687162...
-    0.217423644	0.16964442	0.121462819	0.072993122	0.024350293	-0.024350293	-0.072993122	-0.121462819	-0.16964442...
-    -0.217423644	-0.264687162	-0.311322872	-0.357220158	-0.402270158	-0.446366017	-0.489403146	-0.531279464...
-    -0.571895646	-0.611155355	-0.648965471	-0.685236313	-0.71988185	-0.752819907	-0.783972359	-0.813265315...
-    -0.840629296	-0.865999398	-0.889315446	-0.910522137	-0.929569172	-0.946411375	-0.9610088	-0.973326828...
-    -0.983336254	-0.991013371	-0.996340117	-0.999305042];
-[weight]=[0.001783281	0.004147033	0.006504458	0.00884676	0.011168139	0.013463048	0.01572603	0.017951716	0.020134823...
-    0.022270174	0.024352703	0.02637747	0.028339673	0.030234657	0.032057928	0.033805162	0.035472213	0.037055129	0.038550153...
-    0.039953741	0.041262563	0.042473515	0.043583725	0.044590558	0.045491628	0.046284797	0.046968183	0.047540166	0.047999389...
-    0.048344762	0.048575467	0.048690957	0.048690957	0.048575467	0.048344762	0.047999389	0.047540166	0.046968183	0.046284797...
-    0.045491628	0.044590558	0.043583725	0.042473515	0.041262563	0.039953741	0.038550153	0.037055129	0.035472213	0.033805162...
-    0.032057928	0.030234657	0.028339673	0.02637747	0.024352703	0.022270174	0.020134823	0.017951716	0.01572603	0.013463048...
-    0.011168139	0.00884676	0.006504458	0.004147033	0.001783281];
-% [x]=xlsread('Gauss-Legendre Quadrature','Sheet1','b1:z1');
-% [weight]=xlsread('Gauss-Legendre Quadrature','Sheet1','b2:z2');
+load('gaussian.mat');
 
 E=191e9;               %Young's modulus
 nu=0.38;                 %poisson's ratio
@@ -47,6 +31,7 @@ hydro=1/3*sum(diag(loadtensor));
 yield=y-lam*hydro;                   %our mean stress
 
 %---------------------2 Cyclic load calculation-----------------------------
+% alp0=mean(alp)
 Dcyc(1)=1e-16;
 n=1;
 Wcyc=4*(E-k)*(1+nu)*(b-1)/(E*(E+k*nu)*b*(b+1))*norm(loadtensor-hydro*eye(3),'fro').^(b+1)*yield.^(1-b) ;
@@ -58,7 +43,6 @@ W_cyc=plot (n+1,Wcyc/stepnumber,'LineStyle', 'none','LineWidth', 1, 'Marker', 'o
  n=n+1;
 end
 n
-
 %---------------------3 Numerical method with fixed alp-----------------------------
 D= ones(1,1e6)*1e-16; %Pre-allocate memory for vectors
 n=1;       %initial recording point
@@ -257,17 +241,19 @@ disp(['Cycles to failure is ' num2str(Nf) ' cycles.']);
 disp(['Mean alpha to give fix alpha value is ' num2str(mean(alp)) ' .']);
 
 
+
+
 % %---------------------in loop 2 scales plot settings-----------------------------
 grid on;
 grid minor;
 set(gca ,'FontSize',30);
-hXLabel = xlabel('Time step(1/100 s)' ,'Fontsize' ,30);
+hXLabel = xlabel('Time step(200 steps in one cycle)' ,'Fontsize' ,30);
 hYLabel = ylabel('Dissipated energy per timestep', 'Fontsize' ,30);
 hTitle = title('Dissipated energy comparison of 3 methods' ,'Fontsize' ,30);
 set(hTitle, 'FontSize', 30, 'FontWeight' , 'bold')
 hLegend=legend([Smax1,W_cyc,W_fix_alp,W_change_alp],'S_{max}/4.2e5','W with analytical method(fixed \alpha)','W with numerical method(fixed \alpha)',...
     'W with numerical method(varying \alpha)','Location','southeast');
-set(hLegend, 'FontSize', 20)
+set(hLegend, 'FontSize', 25)
 set(hLegend,'Box','on');
 set(hLegend,'EdgeColor',[1 1 1]); %set the edge colour of the legend to white
 % Adjust font
@@ -287,11 +273,10 @@ set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | point
 set(gcf, 'PaperPosition', [0 0 1280 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 
 
-saveas(gcf,'F:\Git\Anew\figures\W_3methods.png');
-saveas(gcf,'F:\Git\PhDreport\BEAMER\UTC2017\figures\W_3methods.png');
+% saveas(gcf,'F:\Git\Anew\figures\W_3methods.png');
 
 % saveas(gcf,'F:\Git\Anew\figures\W_3methods_enlarge.png');
 
 sp=actxserver('SAPI.SpVoice');
-sp.Speak('I have finished the job you gave me and thank you for that');
+sp.Speak('I have finished');
 %mail2me('job finished',['Elapsed time is ' num2str(toc) ' seconds. Real test time is ' testtime ' seconds. Number of points to failure is ' NF ' points.']);
