@@ -21,7 +21,7 @@ save('HNAP.mat','W0','b','delta_alp','lamplus_num','lamplus','lamminus','fb','a'
 %------------torsion fit-------------------------
 run('HNAP_bt1D_new_alp.m');
 run('HNAP_bt1D_converge_alp_num.m');%--to get NF_num
-run('HNAP_bt1D_plot.m'); 
+run('HNAP_bt1D_plot.m');
 
 % run('HNAP_b1D_m_err1_num.m')
 

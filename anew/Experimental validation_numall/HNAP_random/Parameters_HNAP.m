@@ -115,7 +115,6 @@ fid = fopen('4icbmff1994Macharandomrawtimehistory.txt');
 % fid = fopen('/home/ma/HNAP_random/4icbmff1994Macharandomrawtimehistory.txt');
 [force]=textscan(fid,'%f',repetition,'headerlines',0);
 %save('HNAP_random.mat','ari','repetition','f_sig_xx','f_tau_xy','T_exp','force','-append') 
-a=1e-3;
 delta_alp=1e-2;
 %save('HNAP_random.mat','W0','-append'); 
 

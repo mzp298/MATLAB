@@ -56,7 +56,7 @@ toc;
 e
 nF_num=(e-1)/ari;
 nF_exp=T_exp(1)/184.32*repetition;
-error=(nF_num-nF_exp)/nF_exp;
+error=(nF_num-nF_exp)/nF_exp
 xlwrite('HNAP_random.xls',nF_num,1,'G02');
 xlwrite('HNAP_random.xls',error,1,'H02');
 
