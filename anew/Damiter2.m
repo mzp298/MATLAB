@@ -26,8 +26,9 @@ eta(eta<0)=0;
 Sb11=bsxfun(@rdivide,trial11,bsxfun(@plus,eta,1));Sb12=bsxfun(@rdivide,trial12,bsxfun(@plus,eta,1));Sb13=bsxfun(@rdivide,trial13,bsxfun(@plus,eta,1));
 Sb21=bsxfun(@rdivide,trial21,bsxfun(@plus,eta,1));Sb22=bsxfun(@rdivide,trial22,bsxfun(@plus,eta,1));Sb23=bsxfun(@rdivide,trial23,bsxfun(@plus,eta,1));
 Sb31=bsxfun(@rdivide,trial31,bsxfun(@plus,eta,1));Sb32=bsxfun(@rdivide,trial32,bsxfun(@plus,eta,1));Sb33=bsxfun(@rdivide,trial33,bsxfun(@plus,eta,1));
+%1*64 for each Sb element
 Sbtensor=[Sb11; Sb12; Sb13; Sb21; Sb22; Sb23;Sb31; Sb32; Sb33];
-normSb=1/sqrt(2).*sqrt(sum(Sbtensor.^2));
+normSb=1/sqrt(2).*sqrt(sum(Sbtensor.^2)); %sum(a) sums all the colume
 
 Ws=(bsxfun(@minus,Smaxtrial,bsxfun(@rdivide, yield(n+1),s))<=0).*...
     (0)+...
@@ -40,11 +41,16 @@ sequence(sequence<0)=0;
 alp(n+1)=1-a*sequence;
 
 
-if n+1>(cycles-1)*stepnumber% after adaptation
-alp_ref(g)=alp(n+1);
-n_ref(g)=n+1;
-W_ref(g)=W_accumulate(n+1)-W_accumulate(n_ref(g));
-g=g+1;
+if n+1>(cycles-1)*stepnumber% last cycle after adaptation
+alp_ref(1)=alp(n);
+n_ref(1)=n;
+W_ref(1)=W;
+if abs(alp(n+1)-alp_ref(g))>delta_alp %----giving scalar value to iteration after the addaptation cycle(decrease time step)
+        alp_ref(g+1)=alp(n+1);
+        n_ref(g+1)=n+1;
+        W_ref(g+1)=W_accumulate(n+1)-W_accumulate(n_ref(g));
+    g=g+1;
+end
 end
 
 

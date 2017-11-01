@@ -45,9 +45,11 @@ for  j=1:4 %-----------4 mean stress-----------------
             n=n+1;
         end
         Smax_ben(j,i)=max(Smax); %max sqrt of J2,a
+        
         alp_ben(j,i)=mean(alp_ref);
         hydroplus(j,i)=1/sqrt(2)*(max(hydro)-mean(hydro))+mean(hydro);
         hydrominus(j,i)=1/sqrt(2)*(min(hydro)-mean(hydro))+mean(hydro);
+        
         e=1; %first D index
         r=1; %first reference alp, W, n index when iterate(after adaptation)
         D= 1e-16;
@@ -63,44 +65,77 @@ for  j=1:4 %-----------4 mean stress-----------------
     end
 end
 
+
 % % -------------fit directly on 1d with mean stress(1 lam)
 NFben_tensor=repmat(NFben,4,1);
+%% 
 
 for  j=1:4
     figure(1);
-    hold on;
     ben_exp(j)=semilogx(NFben,Smax_ben(j,:),marker(j),'MarkerSize',12,'LineWidth', 3,'MarkerEdgeColor',color(j,:), 'MarkerFaceColor','none');
+    hold on;
     ben_num(j)=semilogx(NFben_m_num(j,:),Smax_ben(j,:),linestyle(j),'color',color(j,:),'LineWidth', 3);
     figure(2);
     err_ben_m(j) = loglog(NFben,NFben_m_num(j,:),marker(j),'MarkerSize',12,'LineWidth', 3,'MarkerEdgeColor',color(j,:), 'MarkerFaceColor','none');
     hold on;
+    figure(3);
+    hold on;
+    Sa(j) = plot(Smax_ben(j,:),marker(j),'MarkerSize',12,'LineWidth', 3,'MarkerEdgeColor',color(j,:), 'MarkerFaceColor','none');
+    figure(4);
+    hold on;
+    hydroplusplot(j) = plot(hydroplus(j,:),marker(j),'MarkerSize',12,'LineWidth', 3,'MarkerEdgeColor',color(j,:), 'MarkerFaceColor',color(j,:));
+    hydrominusplot(j) = plot(hydrominus(j,:),marker(j),'MarkerSize',12,'LineWidth', 3,'MarkerEdgeColor',color(j,:), 'MarkerFaceColor','none');
 end
 
-%%
 %
-% figure(3);
-% grid on;
-% set(gca ,'FontSize',30);
-% hXLabel = xlabel('n','Fontsize',30, 'FontWeight' , 'bold');
-% hYLabel = ylabel('S_{max}','Fontsize',30, 'FontWeight' , 'bold');
-% set(gcf,'color','w'); %set figure background transparent
-% set(gca,'color','w'); %set axis transparent
-% set(gcf,'outerposition',get(0,'screensize'));
-% set(gcf, 'PaperPositionMode', 'manual');
-% set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
-% set(gcf, 'PaperPosition', [0 0 800 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
-%
-% figure(4);
-% grid on;
-% set(gca ,'FontSize',30);
-% hXLabel = xlabel('n','Fontsize',30, 'FontWeight' , 'bold');
-% hYLabel = ylabel('Hydro_{+}(solid) and hydro_{-}(void)','Fontsize',30, 'FontWeight' , 'bold');
-% set(gcf,'color','w'); %set figure background transparent
-% set(gca,'color','w'); %set axis transparent
-% set(gcf,'outerposition',get(0,'screensize'));
-% set(gcf, 'PaperPositionMode', 'manual');
-% set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
-% set(gcf, 'PaperPosition', [0 0 800 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
+
+figure(3);
+grid on;
+set(gca ,'FontSize',30);
+hXLabel = xlabel('Test number','Fontsize',30, 'FontWeight' , 'bold');
+hYLabel = ylabel('S_{a}','Fontsize',30, 'FontWeight' , 'bold');
+hLegend=legend([Sa(1),Sa(2),Sa(3),Sa(4)],...
+    'S_a with \sigma_m=75 MPa','S_a with \sigma_m=150 MPa',...
+    'S_a with \sigma_m=225 MPa','S_a with \sigma_m=300 MPa',...
+    'location','northeast');
+set(hLegend, 'FontSize', 18);
+set(hLegend,'Box','on');
+set(hLegend,'EdgeColor',[1 1 1]); %set the edge colour of the legend to white
+% Adjust font
+set(gca, 'FontName', 'Helvetica')
+% Adjust axes properties
+set(gca, 'Box', 'on', 'TickDir', 'out', 'TickLength', [.02 .02], ...
+    'XMinorTick', 'on', 'YMinorTick', 'on', 'YGrid', 'on', 'XGrid', 'on',...
+    'XColor', [.3 .3 .3], 'YColor', [.3 .3 .3], ...
+    'LineWidth', 1)
+set(gcf,'color','w'); %set figure background transparent
+set(gca,'color','w'); %set axis transparent
+set(gcf,'outerposition',get(0,'screensize'));
+set(gcf, 'PaperPositionMode', 'manual');
+set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
+set(gcf, 'PaperPosition', [0 0 800 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
+
+figure(4);
+grid on;
+set(gca ,'FontSize',30);
+hXLabel = xlabel('Test number','Fontsize',30, 'FontWeight' , 'bold');
+hYLabel = ylabel('Hydro+(solid) and hydro-(void)','Fontsize',30, 'FontWeight' , 'bold');
+hLegend=legend([hydroplusplot(1),hydroplusplot(2),hydroplusplot(3),hydroplusplot(4),...
+    hydrominusplot(1),hydrominusplot(2),hydrominusplot(3),hydrominusplot(4)],...
+    'hydro+ with \sigma_m=75 MPa','hydro+ with \sigma_m=150 MPa',...
+    'hydro+ with \sigma_m=225 MPa','hydro+ with \sigma_m=300 MPa',...
+    'hydro- with \sigma_m=75 MPa','hydro- with \sigma_m=150 MPa',...
+    'hydro- with \sigma_m=225 MPa','hydro- with \sigma_m=300 MPa',...
+    'location','northeast');
+set(hLegend, 'FontSize', 18);
+set(hLegend,'Box','on');
+set(hLegend,'EdgeColor',[1 1 1]); %set the edge colour of the legend to white
+set(gcf,'color','w'); %set figure background transparent
+set(gca,'color','w'); %set axis transparent
+set(gcf,'outerposition',get(0,'screensize'));
+set(gcf, 'PaperPositionMode', 'manual');
+set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
+set(gcf, 'PaperPosition', [0 0 800 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 
 
 figure(1);
@@ -131,7 +166,6 @@ set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 800 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 
-%%
 figure(2);
 set(gca ,'FontSize',30);
 hXLabel = xlabel('NF_{exp}','Fontsize',30, 'FontWeight' , 'bold');
@@ -173,10 +207,10 @@ figure(1);
 saveas(gcf,'F:\Git\Anew\figures\10HNAP_b1D_m_sn.png');
 figure(2);
 saveas(gcf,'F:\Git\Anew\figures\10HNAP_b1D_m_err.png');
-% figure(3);
-% saveas(gcf,'F:\Git\Anew\figures\10HNAP_b1D_m_Smax.png');
-% figure(4);
-% saveas(gcf,'F:\Git\Anew\figures\10HNAP_b1D_m_hydro.png');
+figure(3);
+saveas(gcf,'F:\Git\Anew\figures\10HNAP_b1D_m_Smax.png');
+figure(4);
+saveas(gcf,'F:\Git\Anew\figures\10HNAP_b1D_m_hydro.png');
 
 sp=actxserver('SAPI.SpVoice');
 sp.Speak('done');

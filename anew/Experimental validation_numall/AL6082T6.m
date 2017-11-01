@@ -17,7 +17,7 @@ delta_alp=1e-4;
 cycles=2;          %numerical cycles to get the mean value
 cycles90=3;       %90 out of phase cycles to mean
 
-lamplus_num=0.95; %manual numerical fit
+lamplus_num=0.9; %manual numerical fit
 save('AL6082T6.mat','W0','b','fb','delta_alp','a','lamplus_num','lamratio','lamplus','lamminus','E','k','nu','y','stepnumber','cycles','cycles90');
 %------------torsion fit-------------------------
 run('AL6082T6_bt1D_new_alp.m');%--to get alp Smax hydro

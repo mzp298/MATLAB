@@ -1,7 +1,7 @@
 clear;clc
 data=xlsread('F:\stress values 4points bending');
-F1=1e6;
-F2=0.8e6;
+F1=3e4;
+F2=5e3;
 L=data(3,1);
 tt=data(15,1);
 ff=data(17,1);
@@ -12,9 +12,8 @@ ap=3*(tt/ff-1/2);
 bc=tt;
 bd=tt;
 bp=tt;
-sigu=1.67e6;
+sigu=1080e6;
 r=0.1;
-%1stOpt when y=3 ; t=pi sqrj reaches sqrjmax(t)
 y=3 ;
 t=pi ; 
 sig1 = [0 0 0;0 0 0;0 0 -F1*L*y/I*sin(t+pi/2);] ;
@@ -74,6 +73,6 @@ set(gca,'color','w'); %set axis transparent
 set(gcf,'outerposition',get(0,'screensize'));
 set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
-set(gcf, 'PaperPosition', [0 0 1200 1000]); %set(gcf,'PaperPosition',[left,bottom,width,height])
-saveas(gcf,'F:\Git\Anew\figures\sequence.png');
+set(gcf, 'PaperPosition', [0 0 1080 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
+% saveas(gcf,'F:\Git\Doctor_thesis_Zepeng\figures\sequence.png');
 

@@ -31,6 +31,6 @@ run('NCD16_bt1D_plot.m');
 % run('NCD16_bt2D_m_90_err1.m')
 
 %%------numerical calculation
-run('NCD16_b1D_m_err1_num.m'); 
-run('NCD16_bt2D_m_err1_num.m')
-run('NCD16_bt2D_m_90_err1_num.m')
+% run('NCD16_b1D_m_err1_num.m'); 
+% run('NCD16_bt2D_m_err1_num.m')
+% run('NCD16_bt2D_m_90_err1_num.m')

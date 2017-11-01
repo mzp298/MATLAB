@@ -14,12 +14,14 @@ dev21g=devn(2,1); dev22g=devn(2,2); dev23g=devn(2,3);
 dev31g=devn(3,1); dev32g=devn(3,2); dev33g=devn(3,3);
 Smax(n+1)=1/sqrt(2).*norm(devn,'fro');
 
+
 trial11=bsxfun(@plus,Sb11,(dev11g-dev11)); trial12=bsxfun(@plus,Sb12,(dev12g-dev12));trial13=bsxfun(@plus,Sb13,(dev13g-dev13));
 trial21=bsxfun(@plus,Sb21,(dev21g-dev21)); trial22=bsxfun(@plus,Sb22,(dev22g-dev22));trial23=bsxfun(@plus,Sb23,(dev23g-dev23));
 trial31=bsxfun(@plus,Sb31,(dev31g-dev31)); trial32=bsxfun(@plus,Sb32,(dev32g-dev32));trial33=bsxfun(@plus,Sb33,(dev33g-dev33));
 
 trialtensor=[trial11; trial12; trial13; trial21; trial22; trial23;trial31; trial32; trial33];
 Smaxtrial=1/sqrt(2).*sqrt(sum(trialtensor.^2));
+% Smaxtrial=sqrt(trial11.^2+trial12.^2);
 eta=bsxfun(@minus,bsxfun(@times,Smaxtrial/yield(n+1),s),1); %1*64
 eta(eta<0)=0;
 
@@ -38,16 +40,9 @@ sequence(sequence<0)=0;
 alp(n+1)=1-a*sequence;
 
 
-% if n+1>(cycles-1)*stepnumber% last cycle after adaptation
-% alp_ref(g)=alp(n+1);
-% n_ref(g)=n+1;
-% W_ref(g)=W;
-% g=g+1;
-% end
-
 if n+1>(cycles-1)*stepnumber% last cycle after adaptation
-alp_ref(1)=alp((cycles-1)*stepnumber);
-n_ref(1)=(cycles-1)*stepnumber;
+alp_ref(1)=alp(n);
+n_ref(1)=n;
 W_ref(1)=W;
 if abs(alp(n+1)-alp_ref(g))>delta_alp %----giving scalar value to iteration after the addaptation cycle(decrease time step)
         alp_ref(g+1)=alp(n+1);
@@ -56,3 +51,11 @@ if abs(alp(n+1)-alp_ref(g))>delta_alp %----giving scalar value to iteration afte
     g=g+1;
 end
 end
+
+
+%     if abs(alp(n+1)-alp_ref(g))>delta_alp %----giving scalar value to iteration after the addaptation cycle(decrease time step)
+%         alp_ref(g+1)=alp(n);
+%         n_ref(g+1)=n;
+%         W_ref(g+1)=W_accumulate(n+1)-W_accumulate(n_ref(g));
+%     g=g+1;
+%     end

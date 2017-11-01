@@ -4,20 +4,20 @@ clear;clc;close all;
 dbstop if error
 format long e
 load('gaussian.mat');
-vpa(x,289);
-vpa(weight,289);
+% vpa(x,289);
+% vpa(weight,289);
 
 E=191e9;               %Young's modulus
 nu=0.38;                 %poisson's ratio
 k=1e9;                  %hardening parameter
 b=1.1;                      %weakening scales distribution exponent (between 1 and 2)
-pb=b;
+pb=1.1;
 y=1080e6;            %macroscopic yield stress
 a=0.5;
 W0=7e5;             %dissipated energy to failure per unit volume
 lam=0.3;               %hydrostatic pressure sensitivity
 m=0;
-load=6.5e8;            %cyclic load
+load=8.5e8;            %cyclic load
 loadtensor= [load 0 0;0 0 0;0 0 0];
 stepnumber=100;        %devide one cycle in X parts
 
@@ -369,18 +369,18 @@ set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | point
 set(gcf, 'PaperPosition', [0 0 1280 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 
 % figure(1)
-% saveas(gcf,'F:\Git\Anew\figures\W_3methods2_100steps.png');
+% saveas(gcf,'F:\Git\Doctor_thesis_Zepeng\figures\W_3methods2_100steps.png');
 % figure(3)
-% saveas(gcf,'F:\Git\Anew\figures\D_3methods2_100steps.png');
+% saveas(gcf,'F:\Git\Doctor_thesis_Zepeng\figures\D_3methods2_100steps.png');
 % figure(5)
-% saveas(gcf,'F:\Git\Anew\figures\W_3methods_diff_100steps.png');
+% saveas(gcf,'F:\Git\Doctor_thesis_Zepeng\figures\W_3methods_diff_100steps.png');
 % figure(7)
-% saveas(gcf,'F:\Git\Anew\figures\D_3methods_diff_100steps.png');
-
+% saveas(gcf,'F:\Git\Doctor_thesis_Zepeng\figures\D_3methods_diff_100steps.png');
+% 
 % figure(1) %after partial enlargement
-% saveas(gcf,'F:\Git\Anew\figures\W_3methods_100steps_enlarge.png');
+% saveas(gcf,'F:\Git\Doctor_thesis_Zepeng\figures\W_3methods_100steps_enlarge.png');
 % figure(3) %after partial enlargement
-% saveas(gcf,'F:\Git\Anew\figures\D_3methods_100steps_enlarge.png');
+% saveas(gcf,'F:\Git\Doctor_thesis_Zepeng\figures\D_3methods_100steps_enlarge.png');
 
 sp=actxserver('SAPI.SpVoice');
 sp.Speak('energy damage');

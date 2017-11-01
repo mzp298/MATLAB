@@ -2,12 +2,12 @@ load('HNAP.mat');%updated lambda
 
 %------------plotting-------------------
 figure(1);%----SN---
-experiments_ben=plot(NFben,Smax_ben,'ko','MarkerSize',12,'LineWidth', 3);
+experiments_ben=semilogx(NFben,Smax_ben,'ko','MarkerSize',12,'LineWidth', 3);
 hold on;
-experiments_tor=plot(NFtor,Smax_tor,'ks','MarkerSize',12,'LineWidth', 3);
-MatlabFit_ben=plot(NFben_num,Smax_ben,'r^','MarkerSize',12,'LineWidth', 3);
+experiments_tor=semilogx(NFtor,Smax_tor,'ks','MarkerSize',12,'LineWidth', 3);
+MatlabFit_ben=semilogx(NFben_num,Smax_ben,'r^','MarkerSize',12,'LineWidth', 3);
 % ana_ben=plot(NFben_ana,Smax_ben,'m^','MarkerSize',12,'LineWidth', 3);
-MatlabFit_tor=plot(NFtor_num,Smax_tor,'bv','MarkerSize',12,'LineWidth', 3);
+MatlabFit_tor=semilogx(NFtor_num,Smax_tor,'bv','MarkerSize',12,'LineWidth', 3);
 set(gca ,'FontSize',30);
 xlabel NF;
 ylabel Smax;

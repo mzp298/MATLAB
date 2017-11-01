@@ -26,7 +26,7 @@ for  i=1:length(NF)
         0             -sigm/3                0 ;...
         0                       0      -sigm/3]; %-----------ocilation center------------
     %---------------------to get the the first Sb-----------------------------
-    run('Damiter1.m')
+    run('Damiter1_90outofphase.m')
     while n<cycles90*stepnumber % to reach equal number of cycles as in phase
         tensor = [stressben(i)*cosd(n*360/stepnumber)+m(i), stresstor(i)*sind(n*360/stepnumber), 0 ;...
             stresstor(i)*sind(n*360/stepnumber), 0,  0 ;...
@@ -39,7 +39,7 @@ for  i=1:length(NF)
         tensor = [stressben(i)*cosd((n+1)*360/stepnumber)+m(i), stresstor(i)*sind((n+1)*360/stepnumber), 0 ;...
             stresstor(i)*sind((n+1)*360/stepnumber), 0,  0 ;...
             0, 0, 0; ];
-        run('Damiter2.m')
+        run('Damiter2_90outofphase.m')
         n=n+1;
     end
     Smax_bt2dm90(i)=max(Smax); %max sqrt of J2,a

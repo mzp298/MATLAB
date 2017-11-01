@@ -8,7 +8,7 @@ MatlabFit_ben=plot(NFben_num,Smax_ben,'r^','MarkerSize',12,'LineWidth', 3);
 MatlabFit_tor=plot(NFtor_num,Smax_tor,'bv','MarkerSize',12,'LineWidth', 3);
 set(gca ,'FontSize',30);
 xlabel NF;
-ylabel Smax;
+ylabel Sa;
 hLegend=legend([experiments_ben,experiments_tor,MatlabFit_ben,MatlabFit_tor],...
     'Bending experiments','Torsion experiments',...
     'Bending best Fit','Torsion best Fit','location','best');

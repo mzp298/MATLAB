@@ -202,7 +202,7 @@ set(gcf,'outerposition',get(0,'screensize'));
 set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 1280 720]); %set(gcf,'PaperPosition',[left,bottom,width,height])
-saveas(gcf,'F:\Git\Anew\figures\trialsin_m.png');
+% saveas(gcf,'F:\Git\Anew\figures\trialsin_m.png');
 %  saveas(gcf,'F:\Git\Anew\figures\trialsin_0.png');
 %
 sp=actxserver('SAPI.SpVoice');

@@ -13,13 +13,14 @@ dev11=dev1(1,1); dev12=dev1(1,2); dev13=dev1(1,3);
 dev21=dev1(2,1); dev22=dev1(2,2); dev23=dev1(2,3);
 dev31=dev1(3,1); dev32=dev1(3,2); dev33=dev1(3,3);
 Smax=1/sqrt(2).*norm(dev1,'fro');
-%1*64
 
 trial11=dev11; trial12=dev12; trial13=dev13;
 trial21=dev21; trial22=dev22; trial23=dev23;
 trial31=dev31; trial32=dev32; trial33=dev33;
 
 Smaxtrial=1/sqrt(2).*norm([trial11, trial12, trial13; trial21, trial22, trial23;trial31, trial32, trial33],'fro');
+% Smaxtrial=sqrt(trial11.^2+trial12.^2);
+
 s= (x/2+1/2).^(1/(1-b));
 eta=bsxfun(@minus,bsxfun(@times,Smaxtrial/yield(1),s),1); %compare Smaxtrial with yield/s
 eta(eta<0)=0; %only keep Smaxtrials which are larger than yield/s

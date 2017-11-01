@@ -1,27 +1,24 @@
 %%------------------1 torsion fit only--------------
 fun_analytical=@(parameters)parameters(1).*E.*(E+k.*nu).*parameters(2).*(parameters(2)+1).*...
     (2.*(1-[alp_tor]).*(E-k).*(1+nu).*(parameters(2)-1)).^-1.*...
-    ([Smax_tor].^(parameters(2)+1).*(y-parameters(3).*[zeros(size(stresstor))]').^(1-parameters(2))...
-    +[Smax_tor].^(parameters(2)+1).*(y-parameters(4).*[zeros(size(stresstor))]').^(1-parameters(2))).^-1-[0.6.*NFtor]';
+    ([Smax_tor].^(parameters(2)+1).*(y-lamplus.*[zeros(size(stresstor))]').^(1-parameters(2))...
+    +[Smax_tor].^(parameters(2)+1).*(y-lamminus.*[zeros(size(stresstor))]').^(1-parameters(2))).^-1-[NFtor]';
 % %-------------lsqnonlin locally stuck, issue new parameters of the non-continuous function using random
 % %-------------generated new values-------------
-parameters=[1e7,3,0,0];
-lb  =  [0,   1,0,0];
-ub =  [1e12,   10,5,5];
+parameters=[1e8,5.2];
+lb  =  [0,   3];
+ub =  [1e12,   10];
 [parameters_fit,resnorm,exitflag]=lsqnonlin(fun_analytical,parameters,lb,ub);
-[W0,b,lamplus,lamminus]=deal(parameters_fit(1),parameters_fit(2),parameters_fit(3),parameters_fit(4));
+[W0,b]=deal(parameters_fit(1),parameters_fit(2));
 least_square=resnorm;
 W0_test(2)=parameters_fit(1); %original fit
 b_test(2)=parameters_fit(2); %original fit
-lamplus_test(2)=parameters_fit(3);
-lamminus_test(2)=parameters_fit(4);
 %------iterate to b converge-----------------
 p=2;
-while   resnorm>2.1e12
+while   resnorm>1.1e12
     b=b_test(p)
     W0=W0_test(p)
-    lamplus=lamplus_test(p)
-    lamminus=lamminus_test(p)
+
    for  i=1:length(stresstor) %experimental points index
     n=1;
     tensor = [0 stresstor(i)*sind(n*360/stepnumber) 0 ;...
@@ -53,15 +50,14 @@ while   resnorm>2.1e12
     p=p+1;
     W0_test(p)=parameters_fit(1);
     b_test(p)=parameters_fit(2);
-    lamplus_test(p)=parameters_fit(3);
-    lamminus_test(p)=parameters_fit(4);
-    if abs(b_test(p)-b)/b<1e-5 %if new fit stucks
+
+    if abs(b_test(p)-b)/b<1e-3 %if new fit stucks
         b_test(p)=b_test(p)*randi([110,200],1,1)/100; %--multiplied by 1.1~2
         if b_test(p)>ub(2)
             b_test(p)=1.01;
         end
     end
-    if abs(W0_test(p)-W0)/W0<1e-5 %if new fit stucks
+    if abs(W0_test(p)-W0)/W0<1e-3 %if new fit stucks
         W0_test(p)=W0_test(p)*randi([110,900],1,1)/100; %--multiplied by 1.1~9
         if W0_test(p)>ub(1)
             W0_test(p)=lb(1);
@@ -70,8 +66,6 @@ while   resnorm>2.1e12
 end
 W0=W0_test(p);
 b=b_test(p);
-lamplus=lamplus_test(p);
-lamminus=lamminus_test(p);
 least_square=resnorm(end)
 W0
 b
@@ -79,16 +73,16 @@ lamplus
 lamminus
 save('HNAP.mat','W0','b','lamplus','lamminus','-append');
 parameters=[W0,b,lamplus,lamminus];
-NFtor_num=fun_analytical(parameters)+[0.6.*NFtor]';
+NFtor_num=fun_analytical(parameters)+[NFtor]';
 
-
-%%-------------2 analytical of NF_ben to identify lam+-
-fun_analytical_ben=@(parameters)W0.*E.*(E+k.*nu).*b.*(b+1).*...
-    (2.*(1-[alp_ben]).*(E-k).*(1+nu).*(b-1)).^-1.*...
-    ([Smax_ben].^(b+1).*(y-parameters(1).*[hydroplus]).^(1-b)...
-    +[Smax_ben].^(b+1).*(y-parameters(2).*[hydrominus]).^(1-b)).^-1-[NFben]';
-parameters=[lamplus,lamminus];
-NFben_ana=fun_analytical_ben(parameters)+[NFben]';
+% 
+% %%-------------2 analytical of NF_ben to identify lam+-
+% fun_analytical_ben=@(parameters)W0.*E.*(E+k.*nu).*b.*(b+1).*...
+%     (2.*(1-[alp_ben]).*(E-k).*(1+nu).*(b-1)).^-1.*...
+%     ([Smax_ben].^(b+1).*(y-parameters(1).*[hydroplus]).^(1-b)...
+%     +[Smax_ben].^(b+1).*(y-parameters(2).*[hydrominus]).^(1-b)).^-1-[NFben]';
+% parameters=[lamplus,lamminus];
+% NFben_ana=fun_analytical_ben(parameters)+[NFben]';
 
 lamplus=lamplus_num %numerical method is more influenced by lamplus
 %%----------3 num_opt to get NFben_num------------------------
@@ -132,5 +126,5 @@ for  i=1:length(NFben)
     end
     NFben_num(i)=e/stepnumber
 end
-save('HNAP.mat','NFben_num','NFben_ana','NFtor_num','alp_ben','alp_tor','lamplus','lamminus','-append');
+save('HNAP.mat','NFben_num','Smax_ben','NFtor_num','Smax_tor','alp_ben','alp_tor','lamplus','lamminus','-append');
 

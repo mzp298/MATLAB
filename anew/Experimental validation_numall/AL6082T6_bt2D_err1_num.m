@@ -101,6 +101,7 @@ figure(1);%----SN---
 experiments_bt2d=plot(NF,Smax_bt2d,'ko','MarkerSize',12,'LineWidth', 3);
 hold on;
 MatlabFit_bt2d=plot(NF_num,Smax_bt2d,'r^','MarkerSize',12,'LineWidth', 3);
+set(gca ,'FontSize',30);
 xlabel NF;
 ylabel Smax;
 hLegend=legend([experiments_bt2d,MatlabFit_bt2d],...

@@ -77,6 +77,7 @@ for  i=1:length(NF)
     hydroplus(i)=1/sqrt(2)*(max(hydro)-mean(hydro))+mean(hydro);
     hydrominus(i)=1/sqrt(2)*(min(hydro)-mean(hydro))+mean(hydro);
 end
+% Smax_bt2d90=sqrt(stressben.^2+stresstor.^2)'; %out of phase Smax
 fun_analytical=@(parameters)parameters(1).*E.*(E+k.*nu).*parameters(2).*(parameters(2)+1).*...
     (2.*(1-alp_bt2d90).*(E-k).*(1+nu).*(parameters(2)-1)).^-1.*...
     (Smax_bt2d90.^(parameters(2)+1).*(y-lamplus.*hydroplus).^(1-parameters(2))...
@@ -150,10 +151,10 @@ set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 800 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 
-figure(1);
-saveas(gcf,'F:\Git\Anew\figures\AL6082T6_bt2d90_sn.png');
-figure(2);
-saveas(gcf,'F:\Git\Anew\figures\AL6082T6_bt2d90_err.png');
+% figure(1);
+% saveas(gcf,'F:\Git\Anew\figures\AL6082T6_bt2d90_sn.png');
+% figure(2);
+% saveas(gcf,'F:\Git\Anew\figures\AL6082T6_bt2d90_err.png');
 
 
 sp=actxserver('SAPI.SpVoice');

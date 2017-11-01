@@ -22,8 +22,8 @@ W0=5e8;             %dissipated energy to failure per unit volume
 lamratio=1;
 lamplus=0.6;
 lamminus=lamratio.*lamplus;
-m=3e8;                   % mean stress
-% m=0;                   % mean stress
+% m=3e8;                   % mean stress
+m=0;                   % mean stress
 sigm=m;
 scentre=[2*sigm/3            0                0 ;...
     0             -sigm/3                0 ;...
@@ -66,13 +66,13 @@ while n<2*stepnumber
         'MarkerEdgeColor','g', 'MarkerFaceColor','g');
     sig=plot (n+1,tensor(1,1),'LineStyle', 'none','LineWidth', 1,'Marker', 's', 'MarkerSize', 11, ...
         'MarkerEdgeColor','none', 'MarkerFaceColor',[238 18 137]/255);
-    yield8=plot (n+1,yield(n+1)*s(10).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 8, ...
+    yield8=plot (n+1,yield(n+1)*s(100).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 8, ...
         'MarkerEdgeColor', 'none', 'MarkerFaceColor', 'b');
-    yield8n=plot (n+1,-yield(n+1)*s(10).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 8, ...
+    yield8n=plot (n+1,-yield(n+1)*s(100).^-1,'LineStyle', 'none','LineWidth', 1,'Marker', 'o', 'MarkerSize', 8, ...
         'MarkerEdgeColor', 'none', 'MarkerFaceColor', 'b');
-    Trial8=plot (n+1,sign(trial11(10))*Smaxtrial(10),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
+    Trial8=plot (n+1,sign(trial11(100))*Smaxtrial(100),'LineStyle', 'none','LineWidth', 1,'Marker', '^', 'MarkerSize', 10, ...
         'MarkerEdgeColor', [1 0.5 0], 'MarkerFaceColor',[1 0.5 0]);
-    Sb8=plot (n+1,sign(Sb11(10))*normSb(10),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
+    Sb8=plot (n+1,sign(Sb11(100))*normSb(100),'LineStyle', 'none','LineWidth', 1,'Marker', 'v', 'MarkerSize', 10, ...
         'MarkerEdgeColor','k', 'MarkerFaceColor','k');
     
     n=n+1;
@@ -122,7 +122,10 @@ set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | point
 set(gcf, 'PaperPosition', [0 0 1280 720]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 % saveas(gcf,'F:\Git\Anew\figures\trialsin_m.png');
 %  saveas(gcf,'F:\Git\Anew\figures\trialsin_0.png');
-%
+
+% saveas(gcf,'F:\360data\important\desktop\trialsin_m.eps','epsc');
+ saveas(gcf,'F:\360data\important\desktop\trialsin_0.eps','epsc');
+
 sp=actxserver('SAPI.SpVoice');
 sp.Speak('Patrick Le tallec');
 

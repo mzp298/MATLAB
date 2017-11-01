@@ -3,8 +3,7 @@ clear;clc;close all;
 dbstop if error
 format long e
 load('gaussian.mat');
-vpa(x,289);
-vpa(weight,289);
+
 
 E=72e9;               %Young's modulus
 nu=0.3;                 %poisson's ratio
@@ -99,9 +98,9 @@ while n<cycles*stepnumber
     alp(n+1)=1-a*sequence;
     
     if abs(alp(n+1)-alp_ref(i))>delta_alp %----giving scalar value to iteration after the addaptation cycle(decrease time step)
-        alp_ref(i+1)=alp(n);
-        n_ref(i+1)=n;
-        W_ref(i+1)=W_accumulate(n_ref(i+1)+1)-W_accumulate(n_ref(i)+1);
+        alp_ref(i+1)=alp(n+1);
+        n_ref(i+1)=n+1;
+        W_ref(i+1)=W_accumulate(n+1)-W_accumulate(n_ref(i));
         i=i+1;
     end
     

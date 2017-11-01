@@ -64,9 +64,12 @@ end
 % set the output or plot the results
 if nargout == 0,
    bar(x,N1,1);
-   xlabel(xl)
-   ylabel(['Nr of cycles: ' num2str(sum(N1)) ...
-         ' (' num2str(sum(N2)/2) ' from half-cycles)']);
+   xlabel(xl,'FontSize', 25, 'FontName', 'Helvetica','FontWeight' , 'bold');
+%    ylabel(['Nr of cycles: ' num2str(sum(N1)) ...
+%          ' (' num2str(sum(N2)/2) ' from half-cycles)'],...
+%          'FontSize', 25, 'FontName', 'Helvetica','FontWeight' , 'bold');
+   ylabel(['Number of cycles'],...
+         'FontSize', 25, 'FontName', 'Helvetica','FontWeight' , 'bold');
 elseif nargout == 1,
    no = N1;
 else

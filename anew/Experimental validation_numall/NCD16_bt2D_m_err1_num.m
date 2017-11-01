@@ -60,11 +60,12 @@ figure(1);%----SN---
 experiments_bt2dm=plot(NF,Smax_bt2dm,'ko','MarkerSize',12,'LineWidth', 3);
 hold on;
 MatlabFit_bt2dm=plot(NF_num,Smax_bt2dm,'r^','MarkerSize',12,'LineWidth', 3);
+set(gca ,'FontSize',30);
 xlabel NF;
-ylabel Smax;
+ylabel Sa;
 hLegend=legend([experiments_bt2dm,MatlabFit_bt2dm],...
     'Bending-torsion with mean stress experiments',...
-    'Bending-torsion with mean stress best Fit','location','best');
+    'Bending-torsion with mean stress numerical results','location','best');
 set(hLegend, 'FontSize', 28);
 set(hLegend,'Box','on');
 set(hLegend,'EdgeColor',[1 1 1]); %set the edge colour of the legend to white
