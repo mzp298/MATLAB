@@ -25,12 +25,8 @@ run('NCD16_bt1D_converge_alp_num.m');%--identify W0, b
 run('NCD16_bt1D_plot.m');
 %% 
 
-% %%------analytical formula-----
-% run('NCD16_b1D_m_err1.m'); 
-% run('NCD16_bt2D_m_err1.m')
-% run('NCD16_bt2D_m_90_err1.m')
-
 %%------numerical calculation
+run('NCD16_bt2D_m_err1_num.m')
+run('NCD16_plot_allcases.m')
 % run('NCD16_b1D_m_err1_num.m'); 
-% run('NCD16_bt2D_m_err1_num.m')
 % run('NCD16_bt2D_m_90_err1_num.m')

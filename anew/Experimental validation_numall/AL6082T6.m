@@ -23,13 +23,11 @@ save('AL6082T6.mat','W0','b','fb','delta_alp','a','lamplus_num','lamratio','lamp
 run('AL6082T6_bt1D_new_alp.m');%--to get alp Smax hydro
 run('AL6082T6_bt1D_converge_alp_num.m');%--to get NF_num
 run('AL6082T6_bt1D_plot.m');
-%%
-%%------analytical formula-----
-% run('AL6082T6_bt2D_err1.m')
-% run('AL6082T6_bt2D_90_err1.m')
 
 %%------numerical calculation
 run('AL6082T6_bt2D_err1_num.m')
 run('AL6082T6_bt2D_90_err1_num.m')
+
+run('AL6082T6_plot_allcases.m')
 
 

@@ -8,7 +8,7 @@ lamratio=0.1;
 lamminus=lamratio*lamplus;
 fb=1.1;
 a=0.01;              %sensitivity of sequence effect(control alp>0)
-lamplus_num=0.3; %manual numerical fit
+lamplus_num=1.7; %manual numerical fit
 E=215e9;              %Young's modulus
 k=8e8;                 %hardening parameter
 nu=0.29;                     %poisson's ratio
@@ -25,5 +25,6 @@ run('HNAP_bt1D_plot.m');
 %% 
 
 run('HNAP_b1D_m_err1_num.m')
+run('HNAP_plot_allcases.m')
 
 % save('F:\Git\MATLAB\anew\Experimental validation_numall\HNAP_random\HNAP_random.mat','lamplus','lamminus','W0','b','fb','a','E','k','nu','y','stepnumber');

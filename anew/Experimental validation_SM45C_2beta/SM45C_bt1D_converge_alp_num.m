@@ -155,7 +155,7 @@ for  i=1:length(NFben)
     end
     NFtor_num(i)=e/stepnumber
     end
-save('SM45C.mat','NFben_num','NFtor_num','lamplus','lamminus','-append');
+save('SM45C.mat','NFben','NFtor','NFben_num','NFtor_num','lamplus','lamminus','-append');
 
 % plot(Smax,'rs')
 % hold on

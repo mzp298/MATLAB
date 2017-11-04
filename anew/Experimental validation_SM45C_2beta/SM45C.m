@@ -27,7 +27,11 @@ ub_beta=6;
 run('SM45C_bt1D_converge_alp_num.m');%--identify W0, b
 save('SM45C.mat','W0','b','-append'); %--1dm in LCF regime
 run('SM45C_bt1D_plot_LCF.m'); 
-
+NFben_LCF=NFben;
+NFtor_LCF=NFtor;
+NFben_num_LCF=NFben_num;
+NFtor_num_LCF=NFtor_num;
+save('SM45C.mat','NFben_LCF','NFtor_LCF','NFben_num_LCF','NFtor_num_LCF','-append');
 %%
 %------------HCF torsion fit-------------------------
 run('SM45C_bt1D_new_alp_HCF.m');%--to get alp, Smax, hydro
@@ -35,17 +39,15 @@ resnorm_limit=4e11;
 ub_beta=50;
 run('SM45C_bt1D_converge_alp_num.m');%--identify W0, b
 run('SM45C_bt1D_plot_HCF.m'); 
-
-% W0 =5.585413751355726e+05
-% b =15.794345066092271
+NFben_HCF=NFben;
+NFtor_HCF=NFtor;
+NFben_num_HCF=NFben_num;
+NFtor_num_HCF=NFtor_num;
+save('SM45C.mat','NFben_HCF','NFtor_HCF','NFben_num_HCF','NFtor_num_HCF','-append');
 
 %%
-% %%------analytical formula-----
-% run('SM45C_b1D_m_err1.m')
-% run('SM45C_bt2D_90_err1.m')
-% run('SM45C_bt2D_m_90_err1.m')
-
 % %%------numerical calculation
 run('SM45C_b1D_m_err1_num.m')
 run('SM45C_bt2D_90_err1_num.m')
-% run('SM45C_bt2D_m_90_err1_num.m')
+run('SM45C_bt2D_m_90_err1_num.m')
+run('SM45C_plot_allcases.m')

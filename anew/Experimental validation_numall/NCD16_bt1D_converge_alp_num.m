@@ -132,4 +132,4 @@ for  i=1:length(NFben)
     NFben_num(i)=e/stepnumber
 end
 
-save('NCD16.mat','NFben_num','NFben_ana','NFtor_num','alp_ben','alp_tor','lamplus','lamminus','-append');
+save('NCD16.mat','NFben','NFtor','NFben_num','NFtor_num','alp_ben','alp_tor','lamplus','lamminus','-append');

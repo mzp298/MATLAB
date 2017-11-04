@@ -2,7 +2,7 @@
 fun_analytical=@(parameters)parameters(1).*E.*(E+k.*nu).*parameters(2).*(parameters(2)+1).*...
     (2.*(1-[alp_tor]).*(E-k).*(1+nu).*(parameters(2)-1)).^-1.*...
     ([Smax_tor].^(parameters(2)+1).*(y-lamplus.*[zeros(size(stresstor))]').^(1-parameters(2))...
-    +[Smax_tor].^(parameters(2)+1).*(y-lamminus.*[zeros(size(stresstor))]').^(1-parameters(2))).^-1-[NFtor]';
+    +[Smax_tor].^(parameters(2)+1).*(y-lamminus.*[zeros(size(stresstor))]').^(1-parameters(2))).^-1-[1.4.*NFtor]';
 % %-------------lsqnonlin locally stuck, issue new parameters of the non-continuous function using random
 % %-------------generated new values-------------
 parameters=[1e8,5.2];
@@ -73,7 +73,7 @@ lamplus
 lamminus
 save('HNAP.mat','W0','b','lamplus','lamminus','-append');
 parameters=[W0,b,lamplus,lamminus];
-NFtor_num=fun_analytical(parameters)+[NFtor]';
+NFtor_num=fun_analytical(parameters)+[1.4.*NFtor]';
 
 % 
 % %%-------------2 analytical of NF_ben to identify lam+-
@@ -126,5 +126,5 @@ for  i=1:length(NFben)
     end
     NFben_num(i)=e/stepnumber
 end
-save('HNAP.mat','NFben_num','Smax_ben','NFtor_num','Smax_tor','alp_ben','alp_tor','lamplus','lamminus','-append');
+save('HNAP.mat','NFben','NFtor','NFben_num','NFtor_num','Smax_ben','Smax_tor','alp_ben','alp_tor','lamplus','lamminus','-append');
 

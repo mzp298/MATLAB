@@ -151,4 +151,4 @@ for  i=1:length(NFben)
     NFben_num(i)=e/stepnumber
 end
 
-save('AL6082T6.mat','NFben_num','NFtor_num','alp_ben','alp_tor','lamplus','lamminus','-append');
+save('AL6082T6.mat','NFben','NFtor','NFben_num','NFtor_num','alp_ben','alp_tor','lamplus','lamminus','-append');

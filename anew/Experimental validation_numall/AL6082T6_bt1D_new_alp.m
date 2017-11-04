@@ -65,21 +65,6 @@ stresstor=1e6.*[117
     104
     ];%to get Smaxtor
 % 
-% %------------reduce to HCF regime-----------
-% NFtor=[534032
-%     76665
-%     132295
-%     203535
-%     1.1E6
-%     565150
-%     ];
-% stresstor=1e6.*[117
-%     127
-%     127
-%     117
-%     106
-%     104
-%     ];%to get Smaxtor
 
 for  i=1:length(stresstor) %experimental points index
     n=1;

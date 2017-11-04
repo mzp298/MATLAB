@@ -10,7 +10,7 @@ load('gaussian.mat');
 % vpa(weight,289);
 
 m=0;%mean tension
-NF=[278836
+NF90=[278836
 465010
 118965
 447525
@@ -47,10 +47,10 @@ stresstor=1e6.*[66
 116
 ];%to get Smaxtor
 
-m=zeros(size(NF));%mean tension
+m=zeros(size(NF90));%mean tension
 sigm=m(1);
 %---------------------Numerical to get the mean value via several cycles-----------------------------
-for  i=1:length(NF)
+for  i=1:length(NF90)
     n=1;       %initial recording point
     tensor = [stressben(i)*sind(n*360/stepnumber)+m(i) stresstor(i)*cosd(n*360/stepnumber) 0 ;...
         stresstor(i)*cosd(n*360/stepnumber) 0  0 ;...
@@ -89,13 +89,13 @@ for  i=1:length(NF)
     NF_num90(i)=e/stepnumber
 end
 
-save('AL6082T6.mat','NF_num90','-append');
+save('AL6082T6.mat','NF90','NF_num90','-append');
 
 
 
 %------------plotting-------------------
 figure(1);%----SN---
-experiments_bt2d90=plot(NF,Smax_bt2d90,'ko','MarkerSize',12,'LineWidth', 3);
+experiments_bt2d90=plot(NF90,Smax_bt2d90,'ko','MarkerSize',12,'LineWidth', 3);
 hold on;
 MatlabFit_bt2d90=plot(NF_num90,Smax_bt2d90,'r^','MarkerSize',12,'LineWidth', 3);
 xlabel NF;
@@ -123,7 +123,7 @@ set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | point
 set(gcf, 'PaperPosition', [0 0 800 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 
 figure(2);
-err_bt_m = loglog(NF,NF_num90,'v','MarkerSize',12,'LineWidth', 3,'MarkerEdgeColor','r', 'MarkerFaceColor','none');
+err_bt_m = loglog(NF90,NF_num90,'v','MarkerSize',12,'LineWidth', 3,'MarkerEdgeColor','r', 'MarkerFaceColor','none');
 set(gca ,'FontSize',30);
 hXLabel = xlabel('NF_{exp}','Fontsize',30, 'FontWeight' , 'bold');
 hYLabel = ylabel('NF_{num}','Fontsize',30, 'FontWeight' , 'bold');

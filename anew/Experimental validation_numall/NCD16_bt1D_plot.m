@@ -29,7 +29,8 @@ set(gcf,'outerposition',get(0,'screensize'));
 set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 800 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
-
+figure(1);
+saveas(gcf,'F:\Git\Anew\figures\NCD16_bt1D_sn.png');
 
 figure(2);%------error bar---------
 err_ben = loglog(NFben,NFben_num,'o','MarkerSize',12,'LineWidth', 3,'MarkerEdgeColor',[208 32 144]/255, 'MarkerFaceColor','none');
@@ -70,8 +71,6 @@ set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'points'); %[ {inches} | centimeters | normalized | points ]
 set(gcf, 'PaperPosition', [0 0 800 800]); %set(gcf,'PaperPosition',[left,bottom,width,height])
 
-figure(1);
-saveas(gcf,'F:\Git\Anew\figures\NCD16_bt1D_sn.png');
 figure(2);
 saveas(gcf,'F:\Git\Anew\figures\NCD16_bt1D_err.png');
 

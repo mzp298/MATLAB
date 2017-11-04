@@ -10,7 +10,7 @@ load('gaussian.mat');
 %vpa(weight,289);
 
 m=196e6;%mean tension
-NFben=[43043.40644
+NFbenm=[43043.40644
 55522.84924
 74724.73326
 75361.55953
@@ -23,7 +23,7 @@ NFben=[43043.40644
 678727.3216
 597603.0102
 ] ;
-stressben=1e6.*[541.48629
+stressbenm=1e6.*[541.48629
 511.47186
 514.35786
 493.57864
@@ -38,9 +38,9 @@ stressben=1e6.*[541.48629
 ];%to get Smaxben
 
 
-for  i=1:length(NFben)
+for  i=1:length(NFbenm)
     n=1;
-    tensor = [stressben(i)*sind(n*360/stepnumber)+m 0 0 ;...
+    tensor = [stressbenm(i)*sind(n*360/stepnumber)+m 0 0 ;...
         0 0 0 ;...
         0 0 0 ];
     sigm=m;
@@ -49,7 +49,7 @@ for  i=1:length(NFben)
         0                       0      -sigm/3];
     run('Damiter1.m')
     while n<cycles*stepnumber
-        tensor = [stressben(i)*sind(n*360/stepnumber)+m, 0, 0 ;...
+        tensor = [stressbenm(i)*sind(n*360/stepnumber)+m, 0, 0 ;...
             0, 0, 0 ;...
             0, 0, 0 ; ];
         hydro=1/3*trace(tensor);
@@ -57,7 +57,7 @@ for  i=1:length(NFben)
         dev11=dev1(1,1); dev12=dev1(1,2); dev13=dev1(1,3);
         dev21=dev1(2,1); dev22=dev1(2,2); dev23=dev1(2,3);
         dev31=dev1(3,1); dev32=dev1(3,2); dev33=dev1(3,3);
-        tensor = [stressben(i)*sind((n+1)*360/stepnumber)+m, 0, 0 ;...
+        tensor = [stressbenm(i)*sind((n+1)*360/stepnumber)+m, 0, 0 ;...
             0, 0,  0 ;...
             0, 0,  0 ; ];
         run('Damiter2.m')
@@ -75,13 +75,15 @@ for  i=1:length(NFben)
         end
         e=e+1;
     end
-    NF_num(i)=e/stepnumber
+    NF_numm(i)=e/stepnumber
 end
 
+save('SM45C.mat','NFbenm','NF_numm','-append');
+
 figure(1);
-smax_exp=semilogx(NFben,Smax_ben_m,'ko','MarkerSize',15,'LineWidth', 3,'MarkerFaceColor','none');
+smax_exp=semilogx(NFbenm,Smax_ben_m,'ko','MarkerSize',15,'LineWidth', 3,'MarkerFaceColor','none');
 hold on;
-smax_num=semilogx(NF_num,Smax_ben_m,'b^','MarkerSize',15,'LineWidth', 3);
+smax_num=semilogx(NF_numm,Smax_ben_m,'b^','MarkerSize',15,'LineWidth', 3);
 set(gca ,'FontSize',30);
 hXLabel = xlabel('NF','Fontsize',30, 'FontWeight' , 'bold');
 hYLabel = ylabel('S_{a}','Fontsize',30, 'FontWeight' , 'bold');
@@ -105,7 +107,7 @@ set(gcf, 'PaperPosition', [0 0 800 800]); %set(gcf,'PaperPosition',[left,bottom,
 
 %%
 figure(2);
-err_ben_m = loglog(NFben,NF_num,'o','MarkerSize',12,'LineWidth', 3,'MarkerEdgeColor',[208 32 144]/255, 'MarkerFaceColor','none');
+err_ben_m = loglog(NFbenm,NF_numm,'+','MarkerSize',12,'LineWidth', 4,'MarkerEdgeColor','k', 'MarkerFaceColor','none');
 set(gca ,'FontSize',30);
 hXLabel = xlabel('NF_{exp}','Fontsize',30, 'FontWeight' , 'bold');
 hYLabel = ylabel('NF_{num}','Fontsize',30, 'FontWeight' , 'bold');
